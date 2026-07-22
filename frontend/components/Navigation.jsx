@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Menu, X, Home, Building2, TrendingUp, Zap, BarChart3, MapPin, User } from 'lucide-react'
+import { Menu, X, Home, Building2, TrendingUp, Zap, BarChart3, MapPin, User, PlusCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import ThemeToggle from '@/components/ThemeToggle'
 
@@ -10,6 +10,7 @@ export default function Navigation({ onNavigate }) {
   const links = [
     { page: 'home', label: 'Home', icon: Home },
     { page: 'listings', label: 'Listings', icon: Building2 },
+    { page: 'add-property', label: 'List Property', icon: PlusCircle },
     { page: 'map-search', label: 'Map Search', icon: MapPin },
     { page: 'comparison', label: 'Compare', icon: TrendingUp },
     { page: 'budget-advisor', label: 'Budget Tool', icon: Zap },

@@ -15,6 +15,7 @@ import Signup from '@/components/pages/Signup'
 import Profile from '@/components/pages/Profile'
 import MapSearch from '@/components/pages/MapSearch'
 import ChatAssistant from '@/components/ChatAssistant'
+import AddProperty from '@/components/pages/AddProperty'
 
 function AppContent({ currentPage, propertyId, handleNavigate }) {
   return (
@@ -32,6 +33,7 @@ function AppContent({ currentPage, propertyId, handleNavigate }) {
       {currentPage === 'signup' && <Signup onNavigate={handleNavigate} />}
       {currentPage === 'profile' && <Profile onNavigate={handleNavigate} />}
       {currentPage === 'map-search' && <MapSearch onNavigate={handleNavigate} />}
+      {currentPage === 'add-property' && <AddProperty onNavigate={handleNavigate} />}
     </div>
   )
 }
