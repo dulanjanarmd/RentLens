@@ -25,4 +25,10 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(false)
                 .maxAge(3600);
     }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploads/**")
+                .addResourceLocations("file:uploads/");
+    }
 }
