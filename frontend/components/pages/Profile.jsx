@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { User, Mail, LogOut, Heart, Clock, Settings } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
-import { mockProperties } from '@/lib/mockData'
+// Removed mockProperties import
 import PropertyCard from '@/components/PropertyCard'
 
 export default function Profile({ onNavigate }) {
@@ -21,7 +21,15 @@ export default function Profile({ onNavigate }) {
     )
   }
 
-  const favoriteProperties = mockProperties.filter((p) =>
+  const [properties, setProperties] = useState([])
+  useEffect(() => {
+    fetch('http://localhost:8080/api/properties')
+      .then(res => res.json())
+      .then(data => setProperties(data))
+      .catch(err => console.error(err))
+  }, [])
+
+  const favoriteProperties = properties.filter((p) =>
     favorites.includes(p.id)
   )
 
