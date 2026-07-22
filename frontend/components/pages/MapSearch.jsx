@@ -3,7 +3,14 @@ import { Search, Filter, MapPin, DollarSign, Sliders } from 'lucide-react'
 import { mockProperties } from '@/lib/mockData'
 
 export default function MapSearch({ onNavigate }) {
-  const [properties, setProperties] = useState(mockProperties)
+  const [properties, setProperties] = useState([])
+  
+  useEffect(() => {
+    fetch('http://localhost:8080/api/properties')
+      .then(res => res.json())
+      .then(data => setProperties(data))
+      .catch(err => console.error("Error fetching properties:", err))
+  }, [])
   const [selectedProperty, setSelectedProperty] = useState(null)
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
@@ -21,7 +28,7 @@ export default function MapSearch({ onNavigate }) {
     { name: 'Negombo', lat: 7.2064, lng: 79.8395, count: 10 },
   ]
 
-  const filteredProperties = mockProperties.filter(
+  const filteredProperties = properties.filter(
     (p) =>
       p.price >= filters.minPrice &&
       p.price <= filters.maxPrice &&
