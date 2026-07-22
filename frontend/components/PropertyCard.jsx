@@ -4,11 +4,10 @@ import { useAuth } from '@/hooks/useAuth'
 export default function PropertyCard({ property, onClick }) {
   const { toggleFavorite, isFavorite } = useAuth()
   const favorite = isFavorite(property.id)
-  const getRVSColor = (score) => {
-    if (score >= 80) return 'text-green-600 bg-green-100'
-    if (score >= 70) return 'text-yellow-600 bg-yellow-100'
-    if (score >= 60) return 'text-orange-600 bg-orange-100'
-    return 'text-red-600 bg-red-100'
+  const getRVSColor = (badge) => {
+    if (badge === 'green') return 'text-green-700 bg-green-100'
+    if (badge === 'amber') return 'text-amber-700 bg-amber-100'
+    return 'text-red-700 bg-red-100'
   }
 
   return (
@@ -16,7 +15,7 @@ export default function PropertyCard({ property, onClick }) {
       {/* Image */}
       <div className="relative overflow-hidden bg-muted h-48 cursor-pointer" onClick={onClick}>
         <img
-          src={property.image}
+          src={property.imageUrl}
           alt={property.title}
           className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
         />
@@ -38,8 +37,8 @@ export default function PropertyCard({ property, onClick }) {
           />
         </button>
         {/* RVS Badge */}
-        <div className={`absolute top-3 left-3 ${getRVSColor(property.rentValueScore)} rounded-lg px-3 py-1 font-bold text-sm`}>
-          RVS: {property.rentValueScore}
+        <div className={`absolute top-3 left-3 ${getRVSColor(property.badge)} rounded-lg px-3 py-1 font-bold text-sm`}>
+          RVS: {property.rentValueScore?.toFixed(1)}
         </div>
       </div>
 
@@ -80,7 +79,7 @@ export default function PropertyCard({ property, onClick }) {
 
         {/* Facilities */}
         <div className="flex flex-wrap gap-1">
-          {property.facilities.slice(0, 2).map((facility) => (
+          {(property.facilities || []).slice(0, 2).map((facility) => (
             <span
               key={facility}
               className="text-xs bg-primary/10 text-primary px-2 py-1 rounded"
@@ -88,9 +87,9 @@ export default function PropertyCard({ property, onClick }) {
               {facility}
             </span>
           ))}
-          {property.facilities.length > 2 && (
+          {(property.facilities || []).length > 2 && (
             <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded">
-              +{property.facilities.length - 2} more
+              +{(property.facilities || []).length - 2} more
             </span>
           )}
         </div>
@@ -99,17 +98,17 @@ export default function PropertyCard({ property, onClick }) {
         <div className="flex items-center gap-2 pt-2 border-t border-border">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="font-semibold text-foreground">{property.rating.toFixed(1)}</span>
+            <span className="font-semibold text-foreground">{property.rating?.toFixed(1) ?? '—'}</span>
             <span className="text-sm text-muted-foreground">
-              ({property.reviews} reviews)
+              ({property.reviewCount ?? 0} reviews)
             </span>
           </div>
         </div>
 
-        {/* Complaint Warning */}
-        {property.complaintCount > 0 && (
+        {/* Verified badge */}
+        {!property.verified && (
           <div className="text-xs bg-orange-50 border border-orange-200 text-orange-800 px-2 py-1 rounded">
-            ⚠️ {property.complaintCount} complaints reported
+            ⚠️ Unverified listing
           </div>
         )}
       </div>

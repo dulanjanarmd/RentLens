@@ -1,57 +1,60 @@
-import { useState } from 'react'
-import { Zap, TrendingUp, Target, AlertCircle } from 'lucide-react'
-import { mockProperties } from '@/lib/mockData'
+import { useState, useEffect, useMemo } from 'react'
+import { Zap, TrendingUp, Target, AlertCircle, Loader2 } from 'lucide-react'
+import { getRecommendations, getProperties } from '@/lib/api'
 import PropertyCard from '@/components/PropertyCard'
 
 export default function BudgetAdvisor({ onNavigate }) {
-  const [budget, setBudget] = useState(50000)
-  const [bedrooms, setBedrooms] = useState('')
-  const [area, setArea] = useState('')
-  const [priority, setPriority] = useState('balanced')
+  const [budget, setBudget]       = useState(50000)
+  const [bedrooms, setBedrooms]   = useState('')
+  const [area, setArea]           = useState('')
+  const [priority, setPriority]   = useState('balanced')
 
-  const areas = [...new Set(mockProperties.map((p) => p.area))]
+  const [allProperties, setAllProperties]         = useState([])
+  const [recommendations, setRecommendations]     = useState([])
+  const [loading, setLoading]                     = useState(false)
+  const [initialLoading, setInitialLoading]       = useState(true)
+  const [error, setError]                         = useState(null)
 
-  // Calculate recommendations based on budget
-  const getRecommendations = () => {
-    let filtered = mockProperties.filter((p) => p.price <= budget)
+  // Fetch all properties once to build the area list and compute insights
+  useEffect(() => {
+    getProperties()
+      .then((data) => setAllProperties(data))
+      .catch(() => {})
+      .finally(() => setInitialLoading(false))
+  }, [])
 
-    if (bedrooms) {
-      filtered = filtered.filter((p) => p.bedrooms === parseInt(bedrooms))
-    }
+  const areas = useMemo(() => [...new Set(allProperties.map((p) => p.area))], [allProperties])
 
-    if (area) {
-      filtered = filtered.filter((p) => p.area === area)
-    }
-
-    // Sort by priority
-    if (priority === 'value') {
-      filtered.sort((a, b) => b.rentValueScore - a.rentValueScore)
-    } else if (priority === 'rating') {
-      filtered.sort((a, b) => b.rating - a.rating)
-    } else if (priority === 'cheapest') {
-      filtered.sort((a, b) => a.price - b.price)
-    } else {
-      // balanced - mix of all factors
-      filtered.sort((a, b) => {
-        const scoreA = (a.rentValueScore * 0.4 + a.rating * 20 * 0.3 + (1 - a.price / 150000) * 100 * 0.3)
-        const scoreB = (b.rentValueScore * 0.4 + b.rating * 20 * 0.3 + (1 - b.price / 150000) * 100 * 0.3)
-        return scoreB - scoreA
-      })
-    }
-
-    return filtered.slice(0, 6)
-  }
-
-  const recommendations = getRecommendations()
-
-  // Calculate budget insights
-  const avgPriceInBudget = Math.round(
-    mockProperties
-      .filter((p) => p.price <= budget)
-      .reduce((acc, p) => acc + p.price, 0) / mockProperties.filter((p) => p.price <= budget).length || 0
+  const propertiesWithinBudget = useMemo(
+    () => allProperties.filter((p) => p.price <= budget).length,
+    [allProperties, budget]
   )
 
-  const propertiesWithinBudget = mockProperties.filter((p) => p.price <= budget).length
+  const avgPriceInBudget = useMemo(() => {
+    const inBudget = allProperties.filter((p) => p.price <= budget)
+    if (!inBudget.length) return 0
+    return Math.round(inBudget.reduce((acc, p) => acc + p.price, 0) / inBudget.length)
+  }, [allProperties, budget])
+
+  // Fetch recommendations from the backend whenever inputs change
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+    getRecommendations(budget)
+      .then((data) => {
+        let filtered = data
+        if (bedrooms)  filtered = filtered.filter((p) => p.bedrooms === parseInt(bedrooms))
+        if (area)      filtered = filtered.filter((p) => p.area === area)
+
+        if (priority === 'rating')   filtered.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+        else if (priority === 'cheapest') filtered.sort((a, b) => a.price - b.price)
+        // 'value' and 'balanced' → backend already returns sorted by RVS desc
+
+        setRecommendations(filtered.slice(0, 6))
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [budget, bedrooms, area, priority])
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-6 lg:px-8 py-8">
@@ -64,10 +67,17 @@ export default function BudgetAdvisor({ onNavigate }) {
           </p>
         </div>
 
+        {error && (
+          <div className="mb-6 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm">{error} — make sure the backend is running on port 8080.</span>
+          </div>
+        )}
+
         {/* Budget Calculator */}
         <div className="bg-gradient-to-br from-primary/10 to-accent/5 p-8 rounded-lg border border-primary/20 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left Column - Inputs */}
+            {/* Inputs */}
             <div className="space-y-6">
               <div>
                 <label className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
@@ -95,14 +105,8 @@ export default function BudgetAdvisor({ onNavigate }) {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  Preferred Bedrooms
-                </label>
-                <select
-                  value={bedrooms}
-                  onChange={(e) => setBedrooms(e.target.value)}
-                  className="input-field"
-                >
+                <label className="text-sm font-semibold text-foreground mb-2 block">Preferred Bedrooms</label>
+                <select value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} className="input-field">
                   <option value="">Any</option>
                   <option value="1">1 Bedroom</option>
                   <option value="2">2 Bedrooms</option>
@@ -112,32 +116,18 @@ export default function BudgetAdvisor({ onNavigate }) {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  Preferred Area
-                </label>
-                <select
-                  value={area}
-                  onChange={(e) => setArea(e.target.value)}
-                  className="input-field"
-                >
+                <label className="text-sm font-semibold text-foreground mb-2 block">Preferred Area</label>
+                <select value={area} onChange={(e) => setArea(e.target.value)} className="input-field">
                   <option value="">Any Area</option>
                   {areas.map((a) => (
-                    <option key={a} value={a}>
-                      {a}
-                    </option>
+                    <option key={a} value={a}>{a}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-foreground mb-2 block">
-                  Priority
-                </label>
-                <select
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value)}
-                  className="input-field"
-                >
+                <label className="text-sm font-semibold text-foreground mb-2 block">Priority</label>
+                <select value={priority} onChange={(e) => setPriority(e.target.value)} className="input-field">
                   <option value="balanced">Balanced (Value + Rating)</option>
                   <option value="value">Best Value Score</option>
                   <option value="rating">Highest Rated</option>
@@ -146,7 +136,7 @@ export default function BudgetAdvisor({ onNavigate }) {
               </div>
             </div>
 
-            {/* Right Column - Insights */}
+            {/* Insights */}
             <div className="space-y-4">
               <div className="bg-card p-6 rounded-lg border border-border">
                 <div className="flex items-start gap-3">
@@ -154,11 +144,9 @@ export default function BudgetAdvisor({ onNavigate }) {
                   <div>
                     <p className="text-sm font-semibold text-foreground">Properties in Budget</p>
                     <p className="text-3xl font-bold text-primary mt-1">
-                      {propertiesWithinBudget}
+                      {initialLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : propertiesWithinBudget}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Available listings matching your budget
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">Available listings matching your budget</p>
                   </div>
                 </div>
               </div>
@@ -169,11 +157,11 @@ export default function BudgetAdvisor({ onNavigate }) {
                   <div>
                     <p className="text-sm font-semibold text-foreground">Average Price</p>
                     <p className="text-3xl font-bold text-accent mt-1">
-                      LKR {avgPriceInBudget.toLocaleString()}
+                      {initialLoading
+                        ? <Loader2 className="w-6 h-6 animate-spin" />
+                        : `LKR ${avgPriceInBudget.toLocaleString()}`}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Among properties in your budget
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">Among properties in your budget</p>
                   </div>
                 </div>
               </div>
@@ -182,7 +170,8 @@ export default function BudgetAdvisor({ onNavigate }) {
                 <div className="flex gap-3">
                   <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-blue-800">
-                    Tip: Properties with high rental value scores offer better amenities and location convenience relative to their price.
+                    Tip: Properties with high rental value scores offer better amenities and
+                    location convenience relative to their price.
                   </p>
                 </div>
               </div>
@@ -194,10 +183,17 @@ export default function BudgetAdvisor({ onNavigate }) {
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-6">
             Recommended Properties
-            {recommendations.length === 0 && <span className="text-base text-muted-foreground"> - No matches found</span>}
+            {!loading && recommendations.length === 0 && (
+              <span className="text-base text-muted-foreground"> — No matches found</span>
+            )}
           </h2>
 
-          {recommendations.length > 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-primary" />
+              <span className="ml-3 text-muted-foreground">Finding best matches...</span>
+            </div>
+          ) : recommendations.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendations.map((property) => (
                 <PropertyCard
@@ -216,10 +212,7 @@ export default function BudgetAdvisor({ onNavigate }) {
               <p className="text-muted-foreground mb-6">
                 Try increasing your budget, adjusting bedroom preferences, or selecting a different area
               </p>
-              <button
-                onClick={() => onNavigate('listings')}
-                className="btn-primary"
-              >
+              <button onClick={() => onNavigate('listings')} className="btn-primary">
                 Browse All Properties
               </button>
             </div>

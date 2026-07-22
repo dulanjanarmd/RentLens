@@ -1,27 +1,122 @@
-import { Star, MapPin, Phone, DollarSign, Home, BedDouble, Waves, Share2, Heart, MapPinIcon, Image, Video } from 'lucide-react'
-import { useState } from 'react'
-import { mockProperties, complaintTags } from '@/lib/mockData'
+import {
+  Star, MapPin, Phone, Home, BedDouble, Waves, Share2, Heart,
+  MapPinIcon, Image, Video, Loader2, AlertCircle, CheckCircle
+} from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { getProperty, getReviews, createReview } from '@/lib/api'
 import ReviewCard from '@/components/ReviewCard'
 import PropertyGallery from '@/components/PropertyGallery'
 import VirtualTour from '@/components/VirtualTour'
 import RiskAnalyzer from '@/components/RiskAnalyzer'
 import { useAuth } from '@/hooks/useAuth'
 
-export default function PropertyDetail({ id, onNavigate }) {
-  const [isSaved, setIsSaved] = useState(false)
-  const [showGallery, setShowGallery] = useState(false)
-  const [showTour, setShowTour] = useState(false)
-  const { toggleFavorite, isFavorite } = useAuth()
+const complaintTagLabels = {
+  water_issues:          'Water Issues',
+  noise:                 'Noise',
+  maintenance_delays:    'Maintenance Delays',
+  landlord_unresponsive: 'Unresponsive Landlord',
+  overcrowding:          'Overcrowding',
+  power_issues:          'Power Issues',
+}
 
+const tagColors = {
+  water_issues:          'bg-blue-100 text-blue-800',
+  noise:                 'bg-yellow-100 text-yellow-800',
+  maintenance_delays:    'bg-orange-100 text-orange-800',
+  landlord_unresponsive: 'bg-red-100 text-red-800',
+  overcrowding:          'bg-purple-100 text-purple-800',
+  power_issues:          'bg-pink-100 text-pink-800',
+}
+
+const RVS_BADGE = {
+  green: 'bg-green-100 border-green-200 text-green-700',
+  amber: 'bg-amber-100 border-amber-200 text-amber-700',
+  red:   'bg-red-100 border-red-200 text-red-700',
+}
+
+export default function PropertyDetail({ id, onNavigate }) {
+  const [property, setProperty]     = useState(null)
+  const [reviews, setReviews]       = useState([])
+  const [loading, setLoading]       = useState(true)
+  const [error, setError]           = useState(null)
+  const [showGallery, setShowGallery] = useState(false)
+  const [showTour, setShowTour]     = useState(false)
+
+  // Review form state
+  const [showReviewForm, setShowReviewForm] = useState(false)
+  const [reviewAuthor, setReviewAuthor]     = useState('')
+  const [reviewRating, setReviewRating]     = useState(5)
+  const [reviewComment, setReviewComment]   = useState('')
+  const [reviewTags, setReviewTags]         = useState([])
+  const [submitting, setSubmitting]         = useState(false)
+  const [submitted, setSubmitted]           = useState(false)
+
+  const { toggleFavorite, isFavorite } = useAuth()
   const favorite = isFavorite(parseInt(id))
 
-  const property = mockProperties.find((p) => p.id === parseInt(id))
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+    Promise.all([
+      getProperty(id),
+      getReviews(id),
+    ])
+      .then(([prop, revs]) => {
+        setProperty(prop)
+        setReviews(revs)
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [id])
 
-  if (!property) {
+  const handleSubmitReview = async (e) => {
+    e.preventDefault()
+    if (!reviewAuthor.trim() || !reviewComment.trim()) return
+    setSubmitting(true)
+    try {
+      const newReview = await createReview({
+        propertyId: parseInt(id),
+        author: reviewAuthor,
+        rating: reviewRating,
+        comment: reviewComment,
+        complaintTags: reviewTags,
+      })
+      setReviews([newReview, ...reviews])
+      setSubmitted(true)
+      setShowReviewForm(false)
+      // Refresh property to get updated rating
+      getProperty(id).then(setProperty)
+    } catch (err) {
+      console.error('Failed to submit review:', err)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const toggleTag = (tag) => {
+    setReviewTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+        <span className="ml-3 text-muted-foreground">Loading property...</span>
+      </div>
+    )
+  }
+
+  if (error || !property) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-4">Property not found</h1>
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            {error ? 'Connection Error' : 'Property not found'}
+          </h1>
+          <p className="text-muted-foreground mb-6 text-sm">{error}</p>
           <button onClick={() => onNavigate('listings')} className="btn-primary">
             Back to Listings
           </button>
@@ -30,44 +125,20 @@ export default function PropertyDetail({ id, onNavigate }) {
     )
   }
 
-  const getComplaintLabel = (tag) => {
-    return complaintTags.find((t) => t.value === tag)?.label || tag
-  }
-
-  const reviews = [
-    {
-      id: 1,
-      author: 'Ahmed Hassan',
-      rating: 4,
-      text: 'Great location and friendly landlord. Had minor water issues but resolved quickly.',
-      tags: ['water_issues'],
-      date: '2 weeks ago'
-    },
-    {
-      id: 2,
-      author: 'Priya Kumari',
-      rating: 5,
-      text: 'Excellent apartment with all facilities. Highly recommended!',
-      tags: [],
-      date: '1 month ago'
-    },
-    {
-      id: 3,
-      author: 'John Silva',
-      rating: 3,
-      text: 'Good place but can be noisy during weekends.',
-      tags: ['noise'],
-      date: '6 weeks ago'
-    }
-  ]
+  const badge = property.badge || 'amber'
+  const badgeClass = RVS_BADGE[badge]
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-6 lg:px-8 py-8">
-      {showGallery && <PropertyGallery propertyId={id} propertyTitle={property.title} onClose={() => setShowGallery(false)} />}
-      {showTour && <VirtualTour propertyTitle={property.title} onClose={() => setShowTour(false)} />}
-      
+      {showGallery && (
+        <PropertyGallery propertyId={id} propertyTitle={property.title} onClose={() => setShowGallery(false)} />
+      )}
+      {showTour && (
+        <VirtualTour propertyTitle={property.title} onClose={() => setShowTour(false)} />
+      )}
+
       <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
+        {/* Back */}
         <button
           onClick={() => onNavigate('listings')}
           className="mb-6 text-primary hover:text-primary/80 font-medium"
@@ -75,7 +146,7 @@ export default function PropertyDetail({ id, onNavigate }) {
           ← Back to Listings
         </button>
 
-        {/* Header with Title and Actions */}
+        {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">{property.title}</h1>
@@ -102,10 +173,10 @@ export default function PropertyDetail({ id, onNavigate }) {
           </div>
         </div>
 
-        {/* Main Image with Gallery/Tour Buttons */}
+        {/* Main Image */}
         <div className="mb-8 relative">
           <img
-            src={property.image}
+            src={property.imageUrl}
             alt={property.title}
             className="w-full h-96 object-cover rounded-lg border border-border"
           />
@@ -130,13 +201,12 @@ export default function PropertyDetail({ id, onNavigate }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Price and Key Info */}
+            {/* Price & Key Info */}
             <div className="bg-card p-6 rounded-lg border border-border">
               <div className="text-3xl font-bold text-primary mb-6">
-                LKR {property.price.toLocaleString()}
+                LKR {property.price?.toLocaleString()}
                 <span className="text-sm text-muted-foreground font-normal"> /month</span>
               </div>
-
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="flex items-center gap-2">
                   <BedDouble className="w-5 h-5 text-primary" />
@@ -176,66 +246,191 @@ export default function PropertyDetail({ id, onNavigate }) {
             </div>
 
             {/* Facilities */}
+            {property.facilities?.length > 0 && (
+              <div className="bg-card p-6 rounded-lg border border-border">
+                <h2 className="text-xl font-bold text-foreground mb-4">Facilities & Amenities</h2>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {property.facilities.map((facility) => (
+                    <div
+                      key={facility}
+                      className="flex items-center gap-2 p-3 bg-secondary rounded-lg text-foreground"
+                    >
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      {facility}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* RVS Sub-score Breakdown */}
             <div className="bg-card p-6 rounded-lg border border-border">
-              <h2 className="text-xl font-bold text-foreground mb-4">Facilities & Amenities</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {property.facilities.map((facility) => (
-                  <div
-                    key={facility}
-                    className="flex items-center gap-2 p-3 bg-secondary rounded-lg text-foreground"
-                  >
-                    <div className="w-2 h-2 bg-primary rounded-full"></div>
-                    {facility}
+              <h2 className="text-xl font-bold text-foreground mb-4">Value Score Breakdown</h2>
+              <div className="space-y-3">
+                {[
+                  { label: 'Price Score (35%)',    value: property.priceScore,    color: 'bg-blue-500' },
+                  { label: 'Distance Score (25%)', value: property.distanceScore, color: 'bg-green-500' },
+                  { label: 'Facility Score (20%)', value: property.facilityScore, color: 'bg-purple-500' },
+                  { label: 'Review Score (20%)',   value: property.reviewScore,   color: 'bg-amber-500' },
+                ].map(({ label, value, color }) => (
+                  <div key={label}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-muted-foreground">{label}</span>
+                      <span className="font-semibold text-foreground">{value?.toFixed(1) ?? '—'}</span>
+                    </div>
+                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${color} transition-all duration-700`}
+                        style={{ width: `${value ?? 0}%` }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Complaints & Issues */}
-            {property.complaints && property.complaints.length > 0 && (
-              <div className="bg-orange-50 border border-orange-200 p-6 rounded-lg">
-                <h2 className="text-lg font-bold text-orange-900 mb-3">⚠️ Reported Issues</h2>
-                <p className="text-sm text-orange-800 mb-3">
-                  {property.complaintCount} complaint{property.complaintCount !== 1 ? 's' : ''} reported by tenants
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {property.complaints.map((complaint) => {
-                    const tag = complaintTags.find((t) => t.value === complaint)
-                    return (
-                      <span
-                        key={complaint}
-                        className={`text-xs px-3 py-1 rounded-full font-medium ${tag?.color}`}
-                      >
-                        {getComplaintLabel(complaint)}
-                      </span>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Risk Analysis */}
-            <RiskAnalyzer property={property} />
+            {/* Risk Analyzer */}
+            <RiskAnalyzer property={{ ...property, complaints: [], complaintCount: 0 }} />
 
             {/* Reviews */}
             <div className="bg-card p-6 rounded-lg border border-border">
-              <h2 className="text-xl font-bold text-foreground mb-4">Tenant Reviews</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-bold text-foreground">
+                  Tenant Reviews ({reviews.length})
+                </h2>
+                {!showReviewForm && (
+                  <button
+                    onClick={() => setShowReviewForm(true)}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm hover:bg-primary/90 transition-colors"
+                  >
+                    Write Review
+                  </button>
+                )}
+              </div>
+
+              {/* Review Form */}
+              {showReviewForm && (
+                <form onSubmit={handleSubmitReview} className="mb-6 p-4 bg-secondary rounded-lg border border-border space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-1">Your Name</label>
+                    <input
+                      type="text"
+                      value={reviewAuthor}
+                      onChange={(e) => setReviewAuthor(e.target.value)}
+                      className="input-field"
+                      placeholder="Enter your name"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-1">Rating</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          type="button"
+                          key={star}
+                          onClick={() => setReviewRating(star)}
+                          className={`text-2xl transition-transform hover:scale-110 ${
+                            star <= reviewRating ? 'text-yellow-400' : 'text-gray-300'
+                          }`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-1">Comment</label>
+                    <textarea
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      className="input-field min-h-[80px] resize-none"
+                      placeholder="Share your experience..."
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-2">Complaint Tags (optional)</label>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(complaintTagLabels).map(([value, label]) => (
+                        <button
+                          type="button"
+                          key={value}
+                          onClick={() => toggleTag(value)}
+                          className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+                            reviewTags.includes(value)
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'border-border text-foreground hover:bg-secondary'
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="btn-primary flex items-center gap-2"
+                    >
+                      {submitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                      Submit Review
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowReviewForm(false)}
+                      className="px-4 py-2 border border-border rounded-lg text-sm hover:bg-secondary transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {submitted && (
+                <div className="mb-4 flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+                  <CheckCircle className="w-4 h-4" />
+                  Review submitted! The property's rating has been updated.
+                </div>
+              )}
+
               <div className="space-y-4">
-                {reviews.map((review) => (
-                  <ReviewCard key={review.id} review={review} />
-                ))}
+                {reviews.length > 0
+                  ? reviews.map((review) => (
+                      <ReviewCard
+                        key={review.id}
+                        review={{
+                          ...review,
+                          text: review.comment,
+                          tags: review.complaintTags || [],
+                          date: review.createdAt
+                            ? new Date(review.createdAt).toLocaleDateString()
+                            : '',
+                        }}
+                      />
+                    ))
+                  : (
+                    <p className="text-muted-foreground text-sm py-4 text-center">
+                      No reviews yet — be the first to review this property!
+                    </p>
+                  )}
               </div>
             </div>
           </div>
 
-          {/* Sidebar - Contact & Quick Info */}
+          {/* Sidebar */}
           <div className="lg:col-span-1 space-y-4">
             {/* Rental Value Score */}
-            <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 p-6 rounded-lg">
-              <p className="text-sm font-medium text-green-900 mb-2">Rental Value Score</p>
-              <div className="text-4xl font-bold text-green-600 mb-2">{property.rentValueScore}</div>
-              <p className="text-xs text-green-800">
-                Excellent value based on price, location, and reviews
+            <div className={`border p-6 rounded-lg ${badgeClass}`}>
+              <p className="text-sm font-medium mb-2">Rental Value Score</p>
+              <div className="text-4xl font-bold mb-2">{property.rentValueScore?.toFixed(1)}</div>
+              <p className="text-xs">
+                {badge === 'green'
+                  ? '✅ Excellent value based on price, location, and reviews'
+                  : badge === 'amber'
+                  ? '⚠️ Average value — compare carefully'
+                  : '🔴 Below-average value for this price point'}
               </p>
             </div>
 
@@ -243,37 +438,38 @@ export default function PropertyDetail({ id, onNavigate }) {
             <div className="bg-card p-6 rounded-lg border border-border">
               <div className="flex items-center gap-2 mb-4">
                 <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                <span className="text-2xl font-bold text-foreground">{property.rating.toFixed(1)}</span>
+                <span className="text-2xl font-bold text-foreground">
+                  {property.rating?.toFixed(1) ?? '—'}
+                </span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Based on {property.reviews} reviews
+                Based on {property.reviewCount ?? 0} reviews
               </p>
             </div>
 
-            {/* Landlord Contact */}
+            {/* Landlord */}
             <div className="bg-primary/10 p-6 rounded-lg border border-primary/20">
               <h3 className="font-bold text-foreground mb-3">Landlord Information</h3>
               <p className="text-sm text-foreground mb-2">{property.landlord}</p>
               <p className="text-xs text-muted-foreground mb-4">
-                Posted on {new Date(property.postedDate).toLocaleDateString()}
+                {property.verified ? '✅ Verified listing' : 'Unverified listing'}
+                {property.postedDate && ` — posted ${new Date(property.postedDate).toLocaleDateString()}`}
               </p>
-              <button className="w-full btn-primary justify-center gap-2 mb-2">
+              <a
+                href={`tel:${property.phone}`}
+                className="w-full btn-primary flex items-center justify-center gap-2 mb-2"
+              >
                 <Phone className="w-4 h-4" />
                 {property.phone}
-              </button>
+              </a>
             </div>
 
-            {/* Compare Button */}
+            {/* Compare */}
             <button
               onClick={() => onNavigate('comparison')}
               className="w-full btn-secondary justify-center"
             >
               Add to Comparison
-            </button>
-
-            {/* Report Button */}
-            <button className="w-full px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium">
-              Report Property
             </button>
           </div>
         </div>
