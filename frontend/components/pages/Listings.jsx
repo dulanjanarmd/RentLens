@@ -1,50 +1,65 @@
-import { useState, useMemo } from 'react'
-import { Search, Filter, Star, MapPin, DollarSign, Home } from 'lucide-react'
-import { mockProperties } from '@/lib/mockData'
+import { useState, useEffect, useMemo } from 'react'
+import { Search, Filter, Star, MapPin, Home, Loader2, AlertCircle } from 'lucide-react'
+import { getProperties } from '@/lib/api'
 import PropertyCard from '@/components/PropertyCard'
 
 export default function Listings({ onNavigate }) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [priceRange, setPriceRange] = useState([0, 150000])
-  const [selectedArea, setSelectedArea] = useState('')
-  const [minRating, setMinRating] = useState(0)
-  const [bedrooms, setBedrooms] = useState('')
+  const [properties, setProperties]   = useState([])
+  const [loading, setLoading]         = useState(true)
+  const [error, setError]             = useState(null)
 
-  const areas = [...new Set(mockProperties.map((p) => p.area))]
+  // Filter state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [priceRange, setPriceRange]   = useState([0, 150000])
+  const [selectedArea, setSelectedArea] = useState('')
+  const [minRating, setMinRating]     = useState(0)
+  const [bedrooms, setBedrooms]       = useState('')
+
+  // Fetch all properties once on mount; filtering is done client-side for
+  // a snappy search experience, with server-side filtering as fallback.
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+    getProperties()
+      .then((data) => setProperties(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const areas = useMemo(() => [...new Set(properties.map((p) => p.area))], [properties])
 
   const filteredProperties = useMemo(() => {
-    return mockProperties.filter((property) => {
+    return properties.filter((property) => {
       const matchesSearch =
         property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         property.area.toLowerCase().includes(searchQuery.toLowerCase())
       const matchesPrice =
         property.price >= priceRange[0] && property.price <= priceRange[1]
-      const matchesArea = !selectedArea || property.area === selectedArea
-      const matchesRating = property.rating >= minRating
+      const matchesArea    = !selectedArea || property.area === selectedArea
+      const matchesRating  = property.rating >= minRating
       const matchesBedrooms = !bedrooms || property.bedrooms === parseInt(bedrooms)
-
-      return (
-        matchesSearch &&
-        matchesPrice &&
-        matchesArea &&
-        matchesRating &&
-        matchesBedrooms
-      )
+      return matchesSearch && matchesPrice && matchesArea && matchesRating && matchesBedrooms
     })
-  }, [searchQuery, priceRange, selectedArea, minRating, bedrooms])
+  }, [properties, searchQuery, priceRange, selectedArea, minRating, bedrooms])
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-6 lg:px-8 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Browse Properties
-          </h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Browse Properties</h1>
           <p className="text-muted-foreground">
-            {filteredProperties.length} properties found
+            {loading ? 'Loading...' : `${filteredProperties.length} properties found`}
           </p>
         </div>
+
+        {/* Error */}
+        {error && (
+          <div className="mb-6 flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm">{error} — make sure the backend is running on port 8080.</span>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar Filters */}
@@ -59,9 +74,7 @@ export default function Listings({ onNavigate }) {
 
               {/* Search */}
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Search
-                </label>
+                <label className="text-sm font-medium text-foreground mb-2 block">Search</label>
                 <div className="relative">
                   <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
                   <input
@@ -86,9 +99,7 @@ export default function Listings({ onNavigate }) {
                     max="150000"
                     step="5000"
                     value={priceRange[1]}
-                    onChange={(e) =>
-                      setPriceRange([priceRange[0], parseInt(e.target.value)])
-                    }
+                    onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
                     className="w-full"
                   />
                   <div className="flex justify-between text-xs text-muted-foreground">
@@ -100,9 +111,7 @@ export default function Listings({ onNavigate }) {
 
               {/* Area */}
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Area
-                </label>
+                <label className="text-sm font-medium text-foreground mb-2 block">Area</label>
                 <select
                   value={selectedArea}
                   onChange={(e) => setSelectedArea(e.target.value)}
@@ -110,23 +119,15 @@ export default function Listings({ onNavigate }) {
                 >
                   <option value="">All Areas</option>
                   {areas.map((area) => (
-                    <option key={area} value={area}>
-                      {area}
-                    </option>
+                    <option key={area} value={area}>{area}</option>
                   ))}
                 </select>
               </div>
 
               {/* Bedrooms */}
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Bedrooms
-                </label>
-                <select
-                  value={bedrooms}
-                  onChange={(e) => setBedrooms(e.target.value)}
-                  className="input-field"
-                >
+                <label className="text-sm font-medium text-foreground mb-2 block">Bedrooms</label>
+                <select value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} className="input-field">
                   <option value="">Any</option>
                   <option value="1">1 Bedroom</option>
                   <option value="2">2 Bedrooms</option>
@@ -137,9 +138,7 @@ export default function Listings({ onNavigate }) {
 
               {/* Min Rating */}
               <div>
-                <label className="text-sm font-medium text-foreground mb-2 block">
-                  Minimum Rating
-                </label>
+                <label className="text-sm font-medium text-foreground mb-2 block">Minimum Rating</label>
                 <select
                   value={minRating}
                   onChange={(e) => setMinRating(parseFloat(e.target.value))}
@@ -153,7 +152,7 @@ export default function Listings({ onNavigate }) {
                 </select>
               </div>
 
-              {/* Reset Button */}
+              {/* Reset */}
               <button
                 onClick={() => {
                   setSearchQuery('')
@@ -171,7 +170,12 @@ export default function Listings({ onNavigate }) {
 
           {/* Properties Grid */}
           <div className="lg:col-span-3">
-            {filteredProperties.length > 0 ? (
+            {loading ? (
+              <div className="flex items-center justify-center py-24">
+                <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                <span className="ml-3 text-muted-foreground">Loading properties from database...</span>
+              </div>
+            ) : filteredProperties.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredProperties.map((property) => (
                   <PropertyCard
@@ -184,12 +188,8 @@ export default function Listings({ onNavigate }) {
             ) : (
               <div className="bg-card p-12 rounded-lg border border-border text-center">
                 <Home className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">
-                  No properties found
-                </h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your filters to see more results
-                </p>
+                <h3 className="text-lg font-semibold text-foreground mb-2">No properties found</h3>
+                <p className="text-muted-foreground">Try adjusting your filters to see more results</p>
               </div>
             )}
           </div>
