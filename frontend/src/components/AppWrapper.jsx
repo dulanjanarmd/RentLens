@@ -33,7 +33,7 @@ import { useAuth } from '@/hooks/useAuth'
 
 function MainLayout() {
   const location = useLocation()
-  const isImmersivePage = ['/', '/login', '/signup'].includes(location.pathname)
+  const isImmersivePage = ['/', '/login', '/signup', '/map-search'].includes(location.pathname)
 
   return (
     <div className="min-h-screen bg-background">

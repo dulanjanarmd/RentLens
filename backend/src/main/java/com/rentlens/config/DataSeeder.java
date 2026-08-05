@@ -60,23 +60,42 @@ public class DataSeeder implements CommandLineRunner {
             seedBlogs();
         }
 
-        if (propertyRepository.count() > 0) {
-            log.info("DataSeeder: properties already seeded. Skipping.");
-            return;
+        if (propertyRepository.count() == 0) {
+            log.info("DataSeeder: No properties found. Seeding initial data...");
+            log.info("DataSeeder: seeding properties and reviews...");
+            List<Property> properties = seedProperties();
+
+            // Collect all prices for market-relative RVS calculation
+            List<Integer> allPrices = properties.stream().map(Property::getPrice).toList();
+            properties.forEach(p -> rentScoreService.computeAndApply(p, allPrices));
+
+            List<Property> saved = propertyRepository.saveAll(properties);
+            log.info("DataSeeder: saved {} properties.", saved.size());
+
+            seedReviews(saved);
+            log.info("DataSeeder: seeding complete.");
+        } else {
+            log.info("DataSeeder: Properties exist. Forcing coordinate updates...");
+            forceUpdateCoordinates();
         }
+    }
 
-        log.info("DataSeeder: seeding properties and reviews...");
-        List<Property> properties = seedProperties();
+    private void forceUpdateCoordinates() {
+        updatePropertyCoords("Modern Apartment in Malabe", 6.9061, 79.9696);
+        updatePropertyCoords("Cozy Room in Kaduwela", 6.9350, 79.9840);
+        updatePropertyCoords("Luxury Flat with City View", 6.9142, 79.8703);
+        updatePropertyCoords("Student Hostel Room", 6.8511, 79.9212);
+        updatePropertyCoords("Villa with Garden", 6.8741, 79.8973);
+        updatePropertyCoords("Studio Apartment", 6.8748, 79.8601);
+    }
 
-        // Collect all prices for market-relative RVS calculation
-        List<Integer> allPrices = properties.stream().map(Property::getPrice).toList();
-        properties.forEach(p -> rentScoreService.computeAndApply(p, allPrices));
-
-        List<Property> saved = propertyRepository.saveAll(properties);
-        log.info("DataSeeder: saved {} properties.", saved.size());
-
-        seedReviews(saved);
-        log.info("DataSeeder: seeding complete.");
+    private void updatePropertyCoords(String title, double lat, double lng) {
+        propertyRepository.findByTitleContainingIgnoreCase(title).stream().findFirst().ifPresent(p -> {
+            p.setLatitude(lat);
+            p.setLongitude(lng);
+            propertyRepository.save(p);
+            log.info("Updated coordinates for: " + title);
+        });
     }
 
     private void seedBlogs() {
@@ -125,7 +144,7 @@ public class DataSeeder implements CommandLineRunner {
                 "John Silva", "+94 70 123 4567",
                 "Spacious modern apartment with excellent facilities and friendly landlord.",
                 "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=550&fit=crop",
-                true, 6.9271, 80.7743, LocalDate.of(2026, 1, 15)
+                true, 6.9061, 79.9696, LocalDate.of(2026, 1, 15)
             ),
 
             property(
@@ -135,7 +154,7 @@ public class DataSeeder implements CommandLineRunner {
                 "Maria Perera", "+94 70 234 5678",
                 "Budget-friendly room perfect for students in a safe area.",
                 "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=550&fit=crop",
-                true, 6.8924, 80.7725, LocalDate.of(2026, 1, 18)
+                true, 6.9350, 79.9840, LocalDate.of(2026, 1, 18)
             ),
 
             property(
@@ -145,7 +164,7 @@ public class DataSeeder implements CommandLineRunner {
                 "Premium Properties Ltd", "+94 70 345 6789",
                 "Premium apartment with modern amenities and premium security.",
                 "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800&h=550&fit=crop",
-                true, 6.9271, 80.6353, LocalDate.of(2026, 1, 10)
+                true, 6.9142, 79.8703, LocalDate.of(2026, 1, 10)
             ),
 
             property(
@@ -155,7 +174,7 @@ public class DataSeeder implements CommandLineRunner {
                 "Youth Accommodations", "+94 70 456 7890",
                 "Affordable hostel room suitable for students.",
                 "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=550&fit=crop",
-                false, 6.8358, 80.7447, LocalDate.of(2026, 1, 20)
+                false, 6.8511, 79.9212, LocalDate.of(2026, 1, 20)
             ),
 
             property(
@@ -165,7 +184,7 @@ public class DataSeeder implements CommandLineRunner {
                 "Mr. Wijesinghe", "+94 70 567 8901",
                 "Beautiful villa with spacious garden and modern facilities.",
                 "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&h=550&fit=crop",
-                true, 6.8769, 80.7799, LocalDate.of(2026, 1, 12)
+                true, 6.8741, 79.8973, LocalDate.of(2026, 1, 12)
             ),
 
             property(
@@ -175,7 +194,7 @@ public class DataSeeder implements CommandLineRunner {
                 "Colombo Residences", "+94 70 678 9012",
                 "Compact studio perfect for professionals.",
                 "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=550&fit=crop",
-                true, 6.8382, 80.6545, LocalDate.of(2026, 1, 17)
+                true, 6.8748, 79.8601, LocalDate.of(2026, 1, 17)
             )
         );
     }
