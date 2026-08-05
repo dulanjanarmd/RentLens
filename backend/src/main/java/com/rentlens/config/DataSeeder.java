@@ -78,6 +78,11 @@ public class DataSeeder implements CommandLineRunner {
             log.info("DataSeeder: Properties exist. Forcing coordinate updates...");
             forceUpdateCoordinates();
         }
+
+        if (propertyRepository.findByTitleContainingIgnoreCase("Seaside Penthouse").isEmpty()) {
+            log.info("DataSeeder: Seeding extra properties for analytics...");
+            seedExtraProperties();
+        }
     }
 
     private void forceUpdateCoordinates() {
@@ -96,6 +101,65 @@ public class DataSeeder implements CommandLineRunner {
             propertyRepository.save(p);
             log.info("Updated coordinates for: " + title);
         });
+    }
+
+    private void seedExtraProperties() {
+        List<Property> extras = Arrays.asList(
+            Property.builder().title("Seaside Penthouse").area("Mount Lavinia").price(250000)
+                .bedrooms(3).bathrooms(3).squareFeet(2500).distance(0.5).propertyType("Apartment").furnished(true)
+                .landlord("Seaside Estates").phone("0711122334").description("Luxurious penthouse overlooking the beach.")
+                .imageUrl("https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.8290).longitude(79.8631).postedDate(LocalDate.now().minusDays(5)).availableFrom(LocalDate.now().plusDays(10))
+                .rating(4.8).reviewCount(12).reviewScore(95.0).rentValueScore(88.5).build(),
+            Property.builder().title("Family House with Large Yard").area("Battaramulla").price(85000)
+                .bedrooms(4).bathrooms(2).squareFeet(3000).distance(2.5).propertyType("House").furnished(false)
+                .landlord("Mr. Perera").phone("0771234567").description("Quiet family home with a huge garden, pet friendly.")
+                .imageUrl("https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.8988).longitude(79.9223).postedDate(LocalDate.now().minusDays(15)).availableFrom(LocalDate.now())
+                .rating(4.2).reviewCount(4).reviewScore(84.0).rentValueScore(75.2).build(),
+            Property.builder().title("Downtown Commercial Office").area("Colombo 3").price(350000)
+                .bedrooms(5).bathrooms(4).squareFeet(4000).distance(0.1).propertyType("Commercial").furnished(true)
+                .landlord("C3 Properties").phone("0112345678").description("Premium office space in the heart of the city.")
+                .imageUrl("https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.9113).longitude(79.8504).postedDate(LocalDate.now().minusDays(2)).availableFrom(LocalDate.now().plusDays(30))
+                .rating(4.5).reviewCount(8).reviewScore(90.0).rentValueScore(82.0).build(),
+            Property.builder().title("Budget Room for Rent").area("Dehiwala").price(18000)
+                .bedrooms(1).bathrooms(1).squareFeet(200).distance(1.2).propertyType("Room").furnished(false)
+                .landlord("Mrs. Silva").phone("0719876543").description("Basic room for a single person. Shared bathroom.")
+                .imageUrl("https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&h=550&fit=crop")
+                .verified(false).latitude(6.8510).longitude(79.8656).postedDate(LocalDate.now().minusDays(20)).availableFrom(LocalDate.now())
+                .rating(3.2).reviewCount(2).reviewScore(64.0).rentValueScore(55.0).build(),
+            Property.builder().title("Modern Duplex House").area("Nugegoda").price(110000)
+                .bedrooms(3).bathrooms(2).squareFeet(1800).distance(1.5).propertyType("House").furnished(true)
+                .landlord("John Doe").phone("0701122334").description("Newly built duplex with all modern amenities.")
+                .imageUrl("https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.8741).longitude(79.8973).postedDate(LocalDate.now().minusDays(8)).availableFrom(LocalDate.now().plusDays(5))
+                .rating(4.6).reviewCount(6).reviewScore(92.0).rentValueScore(81.5).build(),
+            Property.builder().title("Cozy Studio near Campus").area("Malabe").price(32000)
+                .bedrooms(1).bathrooms(1).squareFeet(400).distance(0.8).propertyType("Apartment").furnished(true)
+                .landlord("Campus Living").phone("0772233445").description("Perfect for students, 5 mins walk to SLIIT.")
+                .imageUrl("https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.9147).longitude(79.9729).postedDate(LocalDate.now().minusDays(3)).availableFrom(LocalDate.now())
+                .rating(4.0).reviewCount(15).reviewScore(80.0).rentValueScore(78.0).build(),
+            Property.builder().title("Unfurnished 2BR Apartment").area("Kotte").price(55000)
+                .bedrooms(2).bathrooms(1).squareFeet(900).distance(2.0).propertyType("Apartment").furnished(false)
+                .landlord("Kotte Rentals").phone("0713344556").description("Spacious but needs your own furniture.")
+                .imageUrl("https://images.unsplash.com/photo-1502672023488-70e25813eb80?w=800&h=550&fit=crop")
+                .verified(false).latitude(6.8920).longitude(79.9056).postedDate(LocalDate.now().minusDays(10)).availableFrom(LocalDate.now())
+                .rating(3.8).reviewCount(3).reviewScore(76.0).rentValueScore(68.5).build(),
+            Property.builder().title("Luxury Villa with Pool").area("Colombo 7").price(450000)
+                .bedrooms(5).bathrooms(5).squareFeet(6000).distance(0.5).propertyType("House").furnished(true)
+                .landlord("Elite Homes").phone("0779998887").description("Magnificent villa with private pool and garden.")
+                .imageUrl("https://images.unsplash.com/photo-1613977257363-707ba9348227?w=800&h=550&fit=crop")
+                .verified(true).latitude(6.9125).longitude(79.8650).postedDate(LocalDate.now().minusDays(1)).availableFrom(LocalDate.now().plusDays(15))
+                .rating(4.9).reviewCount(20).reviewScore(98.0).rentValueScore(92.0).build()
+        );
+        
+        extras.forEach(p -> {
+            p.setFacilitiesList(List.of("WiFi", "AC"));
+        });
+        propertyRepository.saveAll(extras);
+        log.info("DataSeeder: Seeded {} extra properties for analytics.", extras.size());
     }
 
     private void seedBlogs() {

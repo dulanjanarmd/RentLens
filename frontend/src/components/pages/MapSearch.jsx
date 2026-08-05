@@ -56,7 +56,7 @@ export default function MapSearch() {
   
   // Advanced filters state
   const [searchQuery, setSearchQuery] = useState('')
-  const [priceRange, setPriceRange] = useState([0, 150000])
+  const [priceRange, setPriceRange] = useState([0, 500000])
   const [bedrooms, setBedrooms] = useState('')
   const [bathrooms, setBathrooms] = useState('')
   const [verifiedOnly, setVerifiedOnly] = useState(false)

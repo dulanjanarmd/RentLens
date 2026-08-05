@@ -13,7 +13,7 @@ export default function Listings() {
 
   // Filter state
   const [searchQuery, setSearchQuery] = useState('')
-  const [priceRange, setPriceRange]   = useState([0, 150000])
+  const [priceRange, setPriceRange]   = useState([0, 500000])
   const [selectedArea, setSelectedArea] = useState('')
   const [minRating, setMinRating]     = useState(0)
   const [bedrooms, setBedrooms]       = useState('')
@@ -105,7 +105,7 @@ export default function Listings() {
                   <input
                     type="range"
                     min="0"
-                    max="150000"
+                    max="500000"
                     step="5000"
                     value={priceRange[1]}
                     onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
@@ -207,7 +207,7 @@ export default function Listings() {
               <button
                 onClick={() => {
                   setSearchQuery('')
-                  setPriceRange([0, 150000])
+                  setPriceRange([0, 500000])
                   setSelectedArea('')
                   setMinRating(0)
                   setBedrooms('')

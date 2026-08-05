@@ -3,6 +3,7 @@ C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\config\Data
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\config\GlobalExceptionHandler.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\AnalyticsController.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\AuthController.java
+C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\BlogPostController.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\FileUploadController.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\InquiryController.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\controller\PropertyController.java
@@ -12,12 +13,14 @@ C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\dto\AuthDTO
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\dto\InquiryDTO.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\dto\PropertyDTO.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\dto\ReviewDTO.java
+C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\BlogPost.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\Inquiry.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\PriceHistory.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\Property.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\Review.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\model\User.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\RentLensApplication.java
+C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\repository\BlogPostRepository.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\repository\InquiryRepository.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\repository\PriceHistoryRepository.java
 C:\Users\damin\Documents\RentLens\backend\src\main\java\com\rentlens\repository\PropertyRepository.java

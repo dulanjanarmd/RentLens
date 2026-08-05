@@ -2,6 +2,7 @@ com\rentlens\dto\AuthDTOs$LoginRequest.class
 com\rentlens\model\User.class
 com\rentlens\model\Review$ReviewBuilder.class
 com\rentlens\dto\AnalyticsDTO$MarketDashboard.class
+com\rentlens\dto\AnalyticsDTO$FurnishedStat.class
 com\rentlens\dto\AnalyticsDTO.class
 com\rentlens\dto\AnalyticsDTO$ComplaintPattern$ComplaintPatternBuilder.class
 com\rentlens\model\Review.class
@@ -15,9 +16,13 @@ com\rentlens\dto\ReviewDTO$ReviewDTOBuilder.class
 com\rentlens\service\ReviewService.class
 com\rentlens\model\PriceHistory$PriceHistoryBuilder.class
 com\rentlens\RentLensApplication.class
+com\rentlens\model\BlogPost.class
 com\rentlens\model\Property.class
 com\rentlens\service\PropertyService.class
+com\rentlens\dto\AnalyticsDTO$TypeStat.class
+com\rentlens\controller\BlogPostController.class
 com\rentlens\dto\AnalyticsDTO$AreaStat$AreaStatBuilder.class
+com\rentlens\dto\AnalyticsDTO$TypeStat$TypeStatBuilder.class
 com\rentlens\dto\AuthDTOs.class
 com\rentlens\dto\AnalyticsDTO$PriceHistoryStat.class
 com\rentlens\model\PriceHistory.class
@@ -33,11 +38,15 @@ com\rentlens\dto\AnalyticsDTO$MarketDashboard$MarketDashboardBuilder.class
 com\rentlens\model\Property$PropertyBuilder.class
 com\rentlens\repository\ReviewRepository.class
 com\rentlens\repository\InquiryRepository.class
+com\rentlens\repository\BlogPostRepository.class
+com\rentlens\model\BlogPost$BlogPostBuilder.class
+com\rentlens\dto\AnalyticsDTO$BedroomStat$BedroomStatBuilder.class
 com\rentlens\config\GlobalExceptionHandler.class
 com\rentlens\model\Inquiry.class
 com\rentlens\controller\InquiryController.class
 com\rentlens\dto\AuthDTOs$AuthResponse.class
 com\rentlens\config\CorsConfig.class
+com\rentlens\dto\AnalyticsDTO$BedroomStat.class
 com\rentlens\service\AuthService.class
 com\rentlens\dto\AuthDTOs$RegisterRequest.class
 com\rentlens\dto\ReviewDTO.class
@@ -47,4 +56,5 @@ com\rentlens\dto\InquiryDTO$InquiryDTOBuilder.class
 com\rentlens\service\InquiryService.class
 com\rentlens\controller\AuthController.class
 com\rentlens\controller\PropertyController.class
+com\rentlens\dto\AnalyticsDTO$FurnishedStat$FurnishedStatBuilder.class
 com\rentlens\model\User$UserBuilder.class

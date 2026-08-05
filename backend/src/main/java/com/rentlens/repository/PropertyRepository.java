@@ -14,6 +14,7 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
     // ─── Filtering ────────────────────────────────────────────────────────────────
 
     List<Property> findByAreaIgnoreCase(String area);
+    List<Property> findByTitleContainingIgnoreCase(String title);
 
     List<Property> findByPriceBetween(int minPrice, int maxPrice);
 

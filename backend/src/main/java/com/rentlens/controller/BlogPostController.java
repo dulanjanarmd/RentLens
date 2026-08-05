@@ -4,7 +4,6 @@ import com.rentlens.model.BlogPost;
 import com.rentlens.repository.BlogPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,14 +29,12 @@ public class BlogPostController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BlogPost> createBlog(@RequestBody BlogPost blogPost) {
         BlogPost saved = blogPostRepository.save(blogPost);
         return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BlogPost> updateBlog(@PathVariable Long id, @RequestBody BlogPost blogPostDetails) {
         return blogPostRepository.findById(id)
                 .map(blog -> {
@@ -52,7 +49,6 @@ public class BlogPostController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         if (!blogPostRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

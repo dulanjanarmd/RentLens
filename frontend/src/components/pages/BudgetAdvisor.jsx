@@ -91,7 +91,7 @@ export default function BudgetAdvisor() {
                   <input
                     type="range"
                     min="10000"
-                    max="150000"
+                    max="500000"
                     step="5000"
                     value={budget}
                     onChange={(e) => setBudget(parseInt(e.target.value))}
