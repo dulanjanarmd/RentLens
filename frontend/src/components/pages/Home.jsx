@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, TrendingUp, MapPin, Star, Zap, BarChart3, Building2, ArrowRight } from 'lucide-react'
+import { Search, TrendingUp, MapPin, Star, Zap, BarChart3, Building2, ArrowRight, Aperture } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useAppNavigation } from '@/hooks/useAppNavigation'
 import api from '@/lib/api'

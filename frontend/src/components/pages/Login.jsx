@@ -59,9 +59,6 @@ export default function Login() {
         <div className="w-full max-w-sm">
           {/* Header */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-2xl mb-6">
-              <LogIn className="w-7 h-7 text-primary" />
-            </div>
             <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Welcome Back</h1>
             <p className="text-muted-foreground mt-3">
               Sign in to your RentLens account to continue
