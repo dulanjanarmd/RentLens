@@ -3,7 +3,7 @@ import {
   MapPinIcon, Image, Video, Loader2, AlertCircle, CheckCircle
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { getProperty, getReviews, createReview } from '@/lib/api'
+import { getProperty, getReviews, createReview, createInquiry } from '@/lib/api'
 import ReviewCard from '@/components/ReviewCard'
 import PropertyGallery from '@/components/PropertyGallery'
 import VirtualTour from '@/components/VirtualTour'
@@ -55,6 +55,14 @@ export default function PropertyDetail() {
   const [submitting, setSubmitting]         = useState(false)
   const [submitted, setSubmitted]           = useState(false)
 
+  // Inquiry form state
+  const [showInquiryForm, setShowInquiryForm] = useState(false)
+  const [inquiryName, setInquiryName]         = useState('')
+  const [inquiryEmail, setInquiryEmail]       = useState('')
+  const [inquiryMessage, setInquiryMessage]   = useState('')
+  const [inquirySubmitting, setInquirySubmitting] = useState(false)
+  const [inquirySubmitted, setInquirySubmitted]   = useState(false)
+
   const { toggleFavorite, isFavorite } = useAuth()
   const favorite = isFavorite(parseInt(id))
 
@@ -94,6 +102,33 @@ export default function PropertyDetail() {
       console.error('Failed to submit review:', err)
     } finally {
       setSubmitting(false)
+    }
+  }
+
+  const handleSubmitInquiry = async (e) => {
+    e.preventDefault()
+    if (!inquiryName.trim() || !inquiryEmail.trim() || !inquiryMessage.trim()) return
+    setInquirySubmitting(true)
+    try {
+      await createInquiry({
+        propertyId: parseInt(id),
+        senderName: inquiryName,
+        senderEmail: inquiryEmail,
+        message: inquiryMessage,
+      })
+      setInquirySubmitted(true)
+      setTimeout(() => {
+        setShowInquiryForm(false)
+        setInquirySubmitted(false)
+        setInquiryName('')
+        setInquiryEmail('')
+        setInquiryMessage('')
+      }, 3000)
+    } catch (err) {
+      console.error('Failed to submit inquiry:', err)
+      alert('Failed to send message.')
+    } finally {
+      setInquirySubmitting(false)
     }
   }
 
@@ -466,6 +501,12 @@ export default function PropertyDetail() {
                 <Phone className="w-4 h-4" />
                 {property.phone}
               </a>
+              <button
+                onClick={() => setShowInquiryForm(true)}
+                className="w-full bg-white text-primary border border-primary hover:bg-primary/5 px-4 py-2 rounded-lg font-medium transition-colors"
+              >
+                Send Message
+              </button>
             </div>
 
             {/* Compare */}
@@ -478,6 +519,63 @@ export default function PropertyDetail() {
           </div>
         </div>
       </div>
+
+      {/* Inquiry Modal */}
+      {showInquiryForm && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-md rounded-xl p-6 shadow-xl border border-border">
+            <h2 className="text-xl font-bold mb-4">Contact Landlord</h2>
+            {inquirySubmitted ? (
+              <div className="flex flex-col items-center justify-center py-8 text-green-600">
+                <CheckCircle className="w-12 h-12 mb-4" />
+                <p className="font-medium">Message sent successfully!</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmitInquiry} className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium block mb-1">Your Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={inquiryName}
+                    onChange={(e) => setInquiryName(e.target.value)}
+                    className="input-field"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium block mb-1">Your Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={inquiryEmail}
+                    onChange={(e) => setInquiryEmail(e.target.value)}
+                    className="input-field"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-medium block mb-1">Message</label>
+                  <textarea
+                    required
+                    value={inquiryMessage}
+                    onChange={(e) => setInquiryMessage(e.target.value)}
+                    className="input-field min-h-[100px] resize-none"
+                    placeholder={`Hi, I'm interested in ${property.title}...`}
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button type="submit" disabled={inquirySubmitting} className="flex-1 btn-primary flex justify-center items-center gap-2">
+                    {inquirySubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+                    Send Message
+                  </button>
+                  <button type="button" onClick={() => setShowInquiryForm(false)} className="px-4 py-2 border border-border rounded-lg hover:bg-secondary transition-colors">
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }

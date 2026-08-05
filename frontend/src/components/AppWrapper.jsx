@@ -18,6 +18,7 @@ import AdminLayout from '@/components/pages/admin/AdminLayout'
 import AdminDashboard from '@/components/pages/admin/AdminDashboard'
 import AdminProperties from '@/components/pages/admin/AdminProperties'
 import AdminReviews from '@/components/pages/admin/AdminReviews'
+import AdminInquiries from '@/components/pages/admin/AdminInquiries'
 import { Outlet } from 'react-router-dom'
 
 function MainLayout() {
@@ -52,6 +53,7 @@ export default function AppWrapper() {
           <Route index element={<AdminDashboard />} />
           <Route path="properties" element={<AdminProperties />} />
           <Route path="reviews" element={<AdminReviews />} />
+          <Route path="inquiries" element={<AdminInquiries />} />
         </Route>
       </Routes>
     </Router>

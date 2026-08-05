@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom'
-import { LayoutDashboard, Home, MessageSquare, ArrowLeft } from 'lucide-react'
+import { LayoutDashboard, Home, MessageSquare, ArrowLeft, Mail } from 'lucide-react'
 
 export default function AdminLayout() {
   const location = useLocation()
@@ -8,6 +8,7 @@ export default function AdminLayout() {
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'Properties', path: '/admin/properties', icon: Home },
     { name: 'Reviews', path: '/admin/reviews', icon: MessageSquare },
+    { name: 'Inquiries', path: '/admin/inquiries', icon: Mail },
   ]
 
   return (
