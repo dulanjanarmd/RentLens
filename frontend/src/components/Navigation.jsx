@@ -55,6 +55,7 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
             {user ? (
+              <>
                 <button
                   onClick={() => handleClick('admin')}
                   className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
@@ -72,6 +73,7 @@ export default function Navigation() {
                   />
                   {user.name}
                 </button>
+              </>
             ) : (
               <>
                 <button
@@ -125,6 +127,7 @@ export default function Navigation() {
                 <ThemeToggle />
               </div>
               {user ? (
+                <>
                   <button
                     onClick={() => handleClick('admin')}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
@@ -138,6 +141,7 @@ export default function Navigation() {
                     <User className="w-4 h-4" />
                     Profile
                   </button>
+                </>
               ) : (
                 <>
                   <button
