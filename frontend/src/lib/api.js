@@ -110,6 +110,14 @@ export const createReview = (data) => client.post('/reviews', data)
  */
 export const deleteReview = (id) => client.delete(`/reviews/${id}`)
 
+// ── Inquiries ─────────────────────────────────────────────────────────────────
+
+export const getAllInquiries = () => client.get('/inquiries')
+
+export const createInquiry = (data) => client.post('/inquiries', data)
+
+export const deleteInquiry = (id) => client.delete(`/inquiries/${id}`)
+
 // ── Analytics ─────────────────────────────────────────────────────────────────
 
 /**
@@ -131,6 +139,9 @@ const api = {
   getAllReviews,
   createReview,
   deleteReview,
+  getAllInquiries,
+  createInquiry,
+  deleteInquiry,
   getMarketDashboard,
 }
 
