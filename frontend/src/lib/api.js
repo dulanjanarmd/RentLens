@@ -128,6 +128,14 @@ export const deleteAccount = (id) => client.delete(`/auth/${id}`)
 
 // ── Analytics ─────────────────────────────────────────────────────────────────
 
+// ── Blogs ─────────────────────────────────────────────────────────────────────
+
+export const getBlogs = () => client.get('/blogs')
+export const getBlog = (id) => client.get(`/blogs/${id}`)
+export const createBlog = (data) => client.post('/blogs', data)
+export const updateBlog = (id, data) => client.put(`/blogs/${id}`, data)
+export const deleteBlog = (id) => client.delete(`/blogs/${id}`)
+
 /**
  * @returns {Promise<MarketDashboard>} - { areaStats, complaintPatterns, rvsBuckets }
  */
@@ -154,6 +162,11 @@ const api = {
   registerUser,
   deleteAccount,
   getMarketDashboard,
+  getBlogs,
+  getBlog,
+  createBlog,
+  updateBlog,
+  deleteBlog,
 }
 
 export default api
