@@ -42,6 +42,7 @@ public class DataSeeder implements CommandLineRunner {
     private final PriceHistoryRepository priceHistoryRepository;
     private final RentScoreService   rentScoreService;
     private final UserRepository     userRepository;
+    private final com.rentlens.repository.BlogPostRepository blogPostRepository;
 
     @Override
     @Transactional
@@ -52,6 +53,11 @@ public class DataSeeder implements CommandLineRunner {
         if (priceHistoryRepository.count() == 0) {
             log.info("DataSeeder: seeding price history...");
             seedPriceHistory();
+        }
+
+        if (blogPostRepository.count() == 0) {
+            log.info("DataSeeder: seeding blogs...");
+            seedBlogs();
         }
 
         if (propertyRepository.count() > 0) {
@@ -71,6 +77,26 @@ public class DataSeeder implements CommandLineRunner {
 
         seedReviews(saved);
         log.info("DataSeeder: seeding complete.");
+    }
+
+    private void seedBlogs() {
+        List<com.rentlens.model.BlogPost> blogs = Arrays.asList(
+            com.rentlens.model.BlogPost.builder()
+                .title("5 Tips for Finding the Perfect Apartment in Colombo")
+                .content("Colombo is a bustling city with a rapidly changing real estate market. Finding the perfect apartment can be challenging, but with these 5 tips, you will be well on your way...\\n\\n1. Know your budget and stick to it.\\n2. Choose a location near your workplace to avoid traffic.\\n3. Check for essential amenities.\\n4. Inspect the property thoroughly.\\n5. Read the lease agreement carefully.")
+                .excerpt("Colombo is a bustling city with a rapidly changing real estate market. Finding the perfect apartment can be challenging...")
+                .author("RentLens Team")
+                .imageUrl("https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80")
+                .build(),
+            com.rentlens.model.BlogPost.builder()
+                .title("Understanding Rent Scores: How We Rate Properties")
+                .content("At RentLens, we believe in transparency. That's why we introduced the Rent Value Score (RVS). Our algorithm takes into account the property's price, location, amenities, and user reviews to give you a single, easy-to-understand score out of 100.")
+                .excerpt("At RentLens, we believe in transparency. That's why we introduced the Rent Value Score (RVS).")
+                .author("Tech Team")
+                .imageUrl("https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80")
+                .build()
+        );
+        blogPostRepository.saveAll(blogs);
     }
 
     // ── Price History seed data ──────────────────────────────────────────────────
