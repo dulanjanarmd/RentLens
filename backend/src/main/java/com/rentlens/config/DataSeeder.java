@@ -2,8 +2,10 @@ package com.rentlens.config;
 
 import com.rentlens.model.Property;
 import com.rentlens.model.Review;
+import com.rentlens.model.PriceHistory;
 import com.rentlens.repository.PropertyRepository;
 import com.rentlens.repository.ReviewRepository;
+import com.rentlens.repository.PriceHistoryRepository;
 import com.rentlens.service.RentScoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,15 +33,20 @@ public class DataSeeder implements CommandLineRunner {
 
     private final PropertyRepository propertyRepository;
     private final ReviewRepository   reviewRepository;
+    private final PriceHistoryRepository priceHistoryRepository;
     private final RentScoreService   rentScoreService;
 
     @Override
     @Transactional
     public void run(String... args) {
 
+        if (priceHistoryRepository.count() == 0) {
+            log.info("DataSeeder: seeding price history...");
+            seedPriceHistory();
+        }
+
         if (propertyRepository.count() > 0) {
-            log.info("DataSeeder: database already seeded ({} properties found). Skipping.",
-                    propertyRepository.count());
+            log.info("DataSeeder: properties already seeded. Skipping.");
             return;
         }
 
@@ -55,6 +62,20 @@ public class DataSeeder implements CommandLineRunner {
 
         seedReviews(saved);
         log.info("DataSeeder: seeding complete.");
+    }
+
+    // ── Price History seed data ──────────────────────────────────────────────────
+    private void seedPriceHistory() {
+        List<PriceHistory> history = Arrays.asList(
+            PriceHistory.builder().month("Jan").averagePrice(42000).medianPrice(40000).sortOrder(1).build(),
+            PriceHistory.builder().month("Feb").averagePrice(43000).medianPrice(41000).sortOrder(2).build(),
+            PriceHistory.builder().month("Mar").averagePrice(44500).medianPrice(42500).sortOrder(3).build(),
+            PriceHistory.builder().month("Apr").averagePrice(45000).medianPrice(44000).sortOrder(4).build(),
+            PriceHistory.builder().month("May").averagePrice(46000).medianPrice(45000).sortOrder(5).build(),
+            PriceHistory.builder().month("Jun").averagePrice(48000).medianPrice(46500).sortOrder(6).build()
+        );
+        priceHistoryRepository.saveAll(history);
+        log.info("DataSeeder: saved {} price history records.", history.size());
     }
 
     // ── Property seed data (mirrors frontend/lib/mockData.js) ────────────────────

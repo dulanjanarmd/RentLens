@@ -3,6 +3,8 @@ package com.rentlens.service;
 import com.rentlens.dto.AnalyticsDTO;
 import com.rentlens.repository.PropertyRepository;
 import com.rentlens.repository.ReviewRepository;
+import com.rentlens.repository.PriceHistoryRepository;
+import com.rentlens.model.PriceHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ public class AnalyticsService {
 
     private final PropertyRepository propertyRepository;
     private final ReviewRepository   reviewRepository;
+    private final PriceHistoryRepository priceHistoryRepository;
 
     /**
      * Builds the market dashboard payload (SRS §3.7):
@@ -66,11 +69,21 @@ public class AnalyticsService {
                     rvsValues.stream().filter(v -> v == b).count());
         }
 
+        // ── Price History ─────────────────────────────────────────────────────────
+        List<AnalyticsDTO.PriceHistoryStat> priceHistory = priceHistoryRepository.findAllByOrderBySortOrderAsc().stream()
+                .map(ph -> AnalyticsDTO.PriceHistoryStat.builder()
+                        .month(ph.getMonth())
+                        .average(ph.getAveragePrice())
+                        .median(ph.getMedianPrice())
+                        .build())
+                .collect(Collectors.toList());
+
         return AnalyticsDTO.MarketDashboard.builder()
                 .areaStats(areaStats)
                 .complaintPatterns(complaints)
                 .rvsBuckets(rvsBuckets)
                 .totalProperties(propertyRepository.countAll())
+                .priceHistory(priceHistory)
                 .build();
     }
 }

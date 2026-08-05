@@ -1,3 +1,5 @@
+com\rentlens\model\PriceHistory.class
+com\rentlens\dto\AnalyticsDTO$PriceHistoryStat$PriceHistoryStatBuilder.class
 com\rentlens\dto\AnalyticsDTO$AreaStat.class
 com\rentlens\model\Review$ReviewBuilder.class
 com\rentlens\controller\AnalyticsController.class
@@ -12,12 +14,14 @@ com\rentlens\config\DataSeeder.class
 com\rentlens\service\AnalyticsService.class
 com\rentlens\dto\AnalyticsDTO$MarketDashboard$MarketDashboardBuilder.class
 com\rentlens\model\Property$PropertyBuilder.class
+com\rentlens\repository\PriceHistoryRepository.class
 com\rentlens\controller\ReviewController.class
 com\rentlens\repository\ReviewRepository.class
 com\rentlens\repository\PropertyRepository.class
 com\rentlens\config\GlobalExceptionHandler.class
 com\rentlens\dto\ReviewDTO$ReviewDTOBuilder.class
 com\rentlens\service\ReviewService.class
+com\rentlens\model\PriceHistory$PriceHistoryBuilder.class
 com\rentlens\RentLensApplication.class
 com\rentlens\config\CorsConfig.class
 com\rentlens\model\Property.class
@@ -26,3 +30,4 @@ com\rentlens\dto\ReviewDTO.class
 com\rentlens\dto\PropertyDTO.class
 com\rentlens\dto\AnalyticsDTO$AreaStat$AreaStatBuilder.class
 com\rentlens\controller\PropertyController.class
+com\rentlens\dto\AnalyticsDTO$PriceHistoryStat.class

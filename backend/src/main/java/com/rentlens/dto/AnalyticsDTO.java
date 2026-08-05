@@ -16,6 +16,7 @@ public class AnalyticsDTO {
         private List<ComplaintPattern> complaintPatterns;
         private Map<String, Long>      rvsBuckets;
         private long                   totalProperties;
+        private List<PriceHistoryStat> priceHistory;
     }
 
     @Data
@@ -36,5 +37,15 @@ public class AnalyticsDTO {
     public static class ComplaintPattern {
         private String tag;
         private int    count;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PriceHistoryStat {
+        private String month;
+        private int average;
+        private int median;
     }
 }
