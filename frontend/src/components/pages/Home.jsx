@@ -140,73 +140,84 @@ export default function Home() {
         )}
       </section>
 
-      {/* 3. Apple-Style Bento Grid Features */}
-      <section className="py-20 bg-muted/30 border-y border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 3. Premium Bento Grid Features */}
+      <section className="py-24 relative overflow-hidden bg-background border-y border-border">
+        {/* Subtle background decoration */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Everything you need to rent smart</h2>
-            <p className="text-lg text-muted-foreground">Powerful tools designed to give you the upper hand in the rental market.</p>
+            <h2 className="text-3xl md:text-5xl font-extrabold text-foreground mb-6 tracking-tight">Everything you need to rent smart</h2>
+            <p className="text-lg md:text-xl text-muted-foreground">Powerful tools designed to give you the upper hand in the rental market.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[240px]">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 auto-rows-[280px]">
             {/* Bento 1: Large feature */}
             <motion.div 
               whileHover={{ scale: 0.98 }}
-              className="md:col-span-2 md:row-span-2 bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl p-8 border border-primary/20 relative overflow-hidden group cursor-pointer"
+              className="md:col-span-2 md:row-span-2 bg-slate-900 dark:bg-slate-950 rounded-[2.5rem] p-10 relative overflow-hidden group cursor-pointer shadow-xl border border-slate-800"
               onClick={() => onNavigate('dashboard')}
             >
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50" />
               <div className="relative z-10 h-full flex flex-col justify-between">
-                <div className="w-14 h-14 bg-background rounded-2xl flex items-center justify-center shadow-sm">
-                  <BarChart3 className="w-7 h-7 text-primary" />
+                <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/10">
+                  <BarChart3 className="w-8 h-8 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">Market Analytics</h3>
-                  <p className="text-muted-foreground max-w-sm">Deep dive into local pricing trends and area statistics to ensure you never overpay for rent again.</p>
+                  <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">Market Analytics</h3>
+                  <p className="text-slate-300 max-w-sm text-lg leading-relaxed">Deep dive into local pricing trends and area statistics to ensure you never overpay for rent again.</p>
                 </div>
               </div>
-              <div className="absolute right-0 bottom-0 opacity-20 group-hover:opacity-40 transition-opacity duration-500 transform translate-x-1/4 translate-y-1/4">
-                <TrendingUp className="w-64 h-64 text-primary" />
+              <div className="absolute right-[-10%] bottom-[-10%] opacity-10 group-hover:opacity-20 transition-all duration-700 transform group-hover:-translate-y-4 group-hover:-translate-x-4">
+                <TrendingUp className="w-96 h-96 text-primary" />
               </div>
             </motion.div>
 
             {/* Bento 2: Medium feature */}
             <motion.div 
               whileHover={{ scale: 0.98 }}
-              className="md:col-span-2 bg-card rounded-3xl p-8 border border-border flex items-center gap-6 cursor-pointer"
+              className="md:col-span-2 bg-gradient-to-br from-orange-50 to-white dark:from-orange-950/20 dark:to-card rounded-[2.5rem] p-8 border border-orange-100 dark:border-orange-900/30 flex flex-col sm:flex-row items-start sm:items-center gap-8 cursor-pointer shadow-lg"
               onClick={() => onNavigate('budget-advisor')}
             >
-              <div className="w-16 h-16 bg-accent/20 shrink-0 rounded-full flex items-center justify-center">
-                <Zap className="w-8 h-8 text-accent" />
+              <div className="w-20 h-20 bg-white dark:bg-orange-900/50 shadow-[0_8px_30px_rgb(249,115,22,0.15)] shrink-0 rounded-[1.5rem] flex items-center justify-center border border-orange-100 dark:border-orange-800">
+                <Zap className="w-10 h-10 text-orange-500" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-foreground mb-2">Budget Advisor</h3>
-                <p className="text-muted-foreground">Input your income, and let our AI suggest optimal areas and properties.</p>
+                <h3 className="text-2xl font-bold text-foreground mb-2 tracking-tight">Budget Advisor</h3>
+                <p className="text-muted-foreground text-lg leading-relaxed">Input your income, and let our AI suggest optimal areas and properties.</p>
               </div>
             </motion.div>
 
             {/* Bento 3: Small feature */}
             <motion.div 
               whileHover={{ scale: 0.98 }}
-              className="bg-card rounded-3xl p-6 border border-border flex flex-col justify-between cursor-pointer"
+              className="bg-card rounded-[2.5rem] p-8 border border-border flex flex-col justify-between cursor-pointer shadow-lg relative overflow-hidden group"
               onClick={() => onNavigate('comparison')}
             >
-              <Building2 className="w-8 h-8 text-foreground" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-950/50 rounded-2xl flex items-center justify-center mb-6">
+                <Building2 className="w-7 h-7 text-blue-500" />
+              </div>
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-1">Compare</h3>
-                <p className="text-sm text-muted-foreground">Side-by-side specs</p>
+                <h3 className="text-xl font-bold text-foreground mb-1 tracking-tight">Compare</h3>
+                <p className="text-muted-foreground">Side-by-side specs</p>
               </div>
             </motion.div>
 
             {/* Bento 4: Small feature */}
             <motion.div 
               whileHover={{ scale: 0.98 }}
-              className="bg-card rounded-3xl p-6 border border-border flex flex-col justify-between cursor-pointer"
+              className="bg-card rounded-[2.5rem] p-8 border border-border flex flex-col justify-between cursor-pointer shadow-lg relative overflow-hidden group"
               onClick={() => onNavigate('map-search')}
             >
-              <MapPin className="w-8 h-8 text-foreground" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-950/50 rounded-2xl flex items-center justify-center mb-6">
+                <MapPin className="w-7 h-7 text-emerald-500" />
+              </div>
               <div>
-                <h3 className="text-lg font-bold text-foreground mb-1">Map View</h3>
-                <p className="text-sm text-muted-foreground">Location scoring</p>
+                <h3 className="text-xl font-bold text-foreground mb-1 tracking-tight">Map View</h3>
+                <p className="text-muted-foreground">Location scoring</p>
               </div>
             </motion.div>
           </div>
