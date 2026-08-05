@@ -67,27 +67,35 @@ export default function Signup() {
   const passwordStrength = formData.password.length > 0 ? Math.min(100, formData.password.length * 15) : 0
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 pt-32 pb-12 overflow-x-hidden overflow-y-auto">
-      {/* Immersive Background */}
-      <div className="absolute inset-0 z-0">
+    <div className="min-h-screen flex bg-background">
+      {/* Left side - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 bg-slate-900/30 z-10" />
         <img 
           src="/hero-bg.png" 
           alt="Luxury modern apartment" 
-          className="w-full h-full object-cover object-center"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-[2px]" />
+        <div className="relative z-20 flex flex-col justify-end p-12 w-full text-white bg-gradient-to-t from-slate-950/90 to-transparent">
+          <div className="mb-8 max-w-md">
+            <h2 className="text-4xl font-bold mb-4 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">Join the Future</h2>
+            <p className="text-lg text-slate-200 drop-shadow-md">
+              Create an account and start discovering the most exclusive rentals in Sri Lanka today.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="w-full max-w-md relative z-10">
-        {/* Glassmorphic Card */}
-        <div className="bg-background/90 dark:bg-card/80 backdrop-blur-2xl rounded-3xl border border-white/20 dark:border-white/10 shadow-2xl p-8 md:p-10">
+      {/* Right side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 pt-32 pb-12 overflow-y-auto">
+        <div className="w-full max-w-sm">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4">
-              <UserPlus className="w-6 h-6 text-primary" />
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-2xl mb-6">
+              <UserPlus className="w-7 h-7 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Create Account</h1>
-            <p className="text-muted-foreground text-sm mt-2">
+            <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Create Account</h1>
+            <p className="text-muted-foreground mt-3">
               Join RentLens and find your perfect home
             </p>
           </div>

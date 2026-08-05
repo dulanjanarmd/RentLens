@@ -214,21 +214,34 @@ export default function Home() {
       </section>
 
       {/* 4. Professional Mega-Footer */}
-      <footer className="bg-background border-t border-border pt-16 pb-8">
+      <footer className="bg-slate-950 dark:bg-black pt-20 pb-10 border-t border-slate-900 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-            <div className="md:col-span-1">
-              <h3 className="text-2xl font-bold text-primary mb-4 flex items-center gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-16">
+            <div className="md:col-span-4 lg:col-span-5">
+              <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                <div className="bg-primary/20 p-1.5 rounded-lg text-primary">
+                  <Aperture className="w-6 h-6" />
+                </div>
                 RentLens
               </h3>
-              <p className="text-muted-foreground mb-6">
-                Bringing transparency, data, and trust to the Sri Lankan rental market.
+              <p className="text-slate-400 mb-8 max-w-sm leading-relaxed">
+                Bringing transparency, data, and trust to the Sri Lankan rental market. Find your perfect home with confidence.
               </p>
+              <div className="flex items-center gap-3">
+                <input 
+                  type="email" 
+                  placeholder="Subscribe to newsletter" 
+                  className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-primary flex-1 max-w-[240px] transition-colors" 
+                />
+                <button className="bg-primary hover:bg-primary/90 text-white rounded-xl px-6 py-3 text-sm font-medium transition-colors shadow-lg shadow-primary/20">
+                  Subscribe
+                </button>
+              </div>
             </div>
             
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Features</h4>
-              <ul className="space-y-3 text-muted-foreground">
+            <div className="md:col-span-2 lg:col-span-2">
+              <h4 className="font-semibold text-white mb-6">Features</h4>
+              <ul className="space-y-4 text-sm text-slate-400">
                 <li><button onClick={() => onNavigate('listings')} className="hover:text-primary transition-colors">Property Search</button></li>
                 <li><button onClick={() => onNavigate('comparison')} className="hover:text-primary transition-colors">Comparison Tool</button></li>
                 <li><button onClick={() => onNavigate('budget-advisor')} className="hover:text-primary transition-colors">Budget Advisor</button></li>
@@ -236,9 +249,9 @@ export default function Home() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Company</h4>
-              <ul className="space-y-3 text-muted-foreground">
+            <div className="md:col-span-2 lg:col-span-2">
+              <h4 className="font-semibold text-white mb-6">Company</h4>
+              <ul className="space-y-4 text-sm text-slate-400">
                 <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
@@ -246,22 +259,23 @@ export default function Home() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Legal</h4>
-              <ul className="space-y-3 text-muted-foreground">
+            <div className="md:col-span-4 lg:col-span-3">
+              <h4 className="font-semibold text-white mb-6">Legal & Support</h4>
+              <ul className="space-y-4 text-sm text-slate-400">
                 <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Cookie Policy</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© 2026 RentLens. All rights reserved.</p>
+          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+            <p>© {new Date().getFullYear()} RentLens. All rights reserved.</p>
             <div className="flex items-center gap-6">
-              <a href="#" className="hover:text-primary transition-colors">Twitter</a>
-              <a href="#" className="hover:text-primary transition-colors">LinkedIn</a>
-              <a href="#" className="hover:text-primary transition-colors">Instagram</a>
+              <a href="#" className="hover:text-white transition-colors">Twitter</a>
+              <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
+              <a href="#" className="hover:text-white transition-colors">Instagram</a>
             </div>
           </div>
         </div>
