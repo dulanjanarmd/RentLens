@@ -35,7 +35,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center px-4 pt-32 pb-12 overflow-x-hidden overflow-y-auto">
       {/* Immersive Background */}
       <div className="absolute inset-0 z-0">
         <img 

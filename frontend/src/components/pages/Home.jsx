@@ -47,21 +47,21 @@ export default function Home() {
           <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary-foreground border border-primary/30 backdrop-blur-md mb-6 text-sm font-medium">
             Welcome to the Future of Renting
           </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 drop-shadow-lg">
-            Find Your <span className="text-primary">Perfect</span> Home
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
+            Find Your <span className="text-primary drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">Perfect</span> Home
           </h1>
-          <p className="text-lg md:text-xl text-gray-200 mb-10 max-w-2xl mx-auto drop-shadow-md">
+          <p className="text-lg md:text-xl text-white font-medium mb-10 max-w-2xl mx-auto drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
             Data-driven insights, verified reviews, and transparent pricing. The smartest way to rent in Sri Lanka.
           </p>
 
           {/* Glassmorphic Search Bar */}
-          <div className="bg-white/10 dark:bg-black/20 backdrop-blur-xl p-3 md:p-4 rounded-2xl border border-white/20 shadow-2xl max-w-3xl mx-auto flex flex-col md:flex-row gap-3">
+          <div className="bg-background/90 dark:bg-card/80 backdrop-blur-xl p-3 md:p-4 rounded-2xl border border-border/50 shadow-2xl max-w-3xl mx-auto flex flex-col md:flex-row gap-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search by area, city, or property name..."
-                className="w-full h-14 pl-12 pr-4 bg-white/10 border border-white/10 rounded-xl text-white placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white/20 transition-all"
+                className="w-full h-14 pl-12 pr-4 bg-background border border-border/50 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') onNavigate('listings')
                 }}

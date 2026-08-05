@@ -37,17 +37,15 @@ export default function Navigation() {
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1 xl:gap-2 flex-1 justify-center">
+          <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
             {links.map((link) => {
-              const Icon = link.icon
               return (
                 <button
                   key={link.page}
                   onClick={() => handleClick(link.page)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-all whitespace-nowrap"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/5 rounded-full transition-all whitespace-nowrap"
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden xl:inline">{link.label}</span>
+                  {link.label}
                 </button>
               )
             })}
