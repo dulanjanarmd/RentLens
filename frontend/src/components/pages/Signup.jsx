@@ -67,10 +67,20 @@ export default function Signup() {
   const passwordStrength = formData.password.length > 0 ? Math.min(100, formData.password.length * 15) : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-card rounded-xl border border-border shadow-lg p-8">
+    <div className="min-h-screen relative flex items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Immersive Background */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/hero-bg.png" 
+          alt="Luxury modern apartment" 
+          className="w-full h-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/40 dark:bg-black/70 backdrop-blur-[2px]" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Glassmorphic Card */}
+        <div className="bg-background/90 dark:bg-card/80 backdrop-blur-2xl rounded-3xl border border-white/20 dark:border-white/10 shadow-2xl p-8 md:p-10">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-lg mb-4">

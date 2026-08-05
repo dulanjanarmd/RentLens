@@ -25,8 +25,8 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="bg-card/80 backdrop-blur-md border-b border-border sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-4 left-0 right-0 z-50 mx-4 sm:mx-6 lg:mx-8">
+      <div className="max-w-7xl mx-auto bg-background/80 dark:bg-background/60 backdrop-blur-xl border border-border/50 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 gap-4">
           {/* Logo */}
           <button onClick={() => handleClick('home')} className="flex items-center gap-2 font-bold text-xl text-primary hover:opacity-80 transition-opacity shrink-0">
@@ -44,7 +44,7 @@ export default function Navigation() {
                 <button
                   key={link.page}
                   onClick={() => handleClick(link.page)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-all"
+                  className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-md transition-all whitespace-nowrap"
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden xl:inline">{link.label}</span>

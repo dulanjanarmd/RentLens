@@ -19,14 +19,19 @@ import AdminDashboard from '@/components/pages/admin/AdminDashboard'
 import AdminProperties from '@/components/pages/admin/AdminProperties'
 import AdminReviews from '@/components/pages/admin/AdminReviews'
 import AdminInquiries from '@/components/pages/admin/AdminInquiries'
-import { Outlet, Navigate } from 'react-router-dom'
+import { Outlet, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 
 function MainLayout() {
+  const location = useLocation()
+  const isImmersivePage = ['/', '/login', '/signup'].includes(location.pathname)
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
-      <Outlet />
+      <div className={isImmersivePage ? '' : 'pt-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'}>
+        <Outlet />
+      </div>
     </div>
   )
 }
