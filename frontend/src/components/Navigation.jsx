@@ -55,17 +55,23 @@ export default function Navigation() {
           <div className="hidden md:flex items-center gap-3">
             <ThemeToggle />
             {user ? (
-              <button
-                onClick={() => handleClick('profile')}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-              >
-                <img
-                  src={user.profileImage}
-                  alt={user.name}
-                  className="w-5 h-5 rounded-full"
-                />
-                {user.name}
-              </button>
+                <button
+                  onClick={() => handleClick('admin')}
+                  className="px-3 py-2 text-sm font-medium text-gray-500 hover:text-primary transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
+                >
+                  Admin
+                </button>
+                <button
+                  onClick={() => handleClick('profile')}
+                  className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  <img
+                    src={user.profileImage}
+                    alt={user.name}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  {user.name}
+                </button>
             ) : (
               <>
                 <button
@@ -119,13 +125,19 @@ export default function Navigation() {
                 <ThemeToggle />
               </div>
               {user ? (
-                <button
-                  onClick={() => handleClick('profile')}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
-                >
-                  <User className="w-4 h-4" />
-                  Profile
-                </button>
+                  <button
+                    onClick={() => handleClick('admin')}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+                  >
+                    Admin Panel
+                  </button>
+                  <button
+                    onClick={() => handleClick('profile')}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary rounded-lg"
+                  >
+                    <User className="w-4 h-4" />
+                    Profile
+                  </button>
               ) : (
                 <>
                   <button

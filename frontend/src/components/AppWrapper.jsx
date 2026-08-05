@@ -14,12 +14,26 @@ import Profile from '@/components/pages/Profile'
 import Login from '@/components/pages/Login'
 import Signup from '@/components/pages/Signup'
 
+import AdminLayout from '@/components/pages/admin/AdminLayout'
+import AdminDashboard from '@/components/pages/admin/AdminDashboard'
+import AdminProperties from '@/components/pages/admin/AdminProperties'
+import AdminReviews from '@/components/pages/admin/AdminReviews'
+import { Outlet } from 'react-router-dom'
+
+function MainLayout() {
+  return (
+    <div className="min-h-screen bg-background">
+      <Navigation />
+      <Outlet />
+    </div>
+  )
+}
+
 export default function AppWrapper() {
   return (
     <Router>
-      <div className="min-h-screen bg-background">
-        <Navigation />
-        <Routes>
+      <Routes>
+        <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/property/:id" element={<PropertyDetail />} />
@@ -31,8 +45,15 @@ export default function AppWrapper() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-        </Routes>
-      </div>
+        </Route>
+        
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="properties" element={<AdminProperties />} />
+          <Route path="reviews" element={<AdminReviews />} />
+        </Route>
+      </Routes>
     </Router>
   )
 }
