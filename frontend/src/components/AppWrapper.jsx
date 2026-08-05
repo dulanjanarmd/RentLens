@@ -17,6 +17,10 @@ import About from '@/components/pages/About'
 import Contact from '@/components/pages/Contact'
 import BlogList from '@/components/pages/BlogList'
 import BlogPostView from '@/components/pages/BlogPostView'
+import PrivacyPolicy from '@/components/pages/PrivacyPolicy'
+import TermsOfService from '@/components/pages/TermsOfService'
+import CookiePolicy from '@/components/pages/CookiePolicy'
+import HelpCenter from '@/components/pages/HelpCenter'
 
 import AdminLayout from '@/components/pages/admin/AdminLayout'
 import AdminDashboard from '@/components/pages/admin/AdminDashboard'
@@ -73,6 +77,10 @@ export default function AppWrapper() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:id" element={<BlogPostView />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/cookies" element={<CookiePolicy />} />
+          <Route path="/help" element={<HelpCenter />} />
         </Route>
         
         {/* Admin Routes */}

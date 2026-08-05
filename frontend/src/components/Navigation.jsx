@@ -12,6 +12,10 @@ export default function Navigation() {
   const links = [
     { page: 'home', label: 'Home', icon: Home },
     { page: 'listings', label: 'Listings', icon: Building2 },
+    { page: 'map-search', label: 'Map Search', icon: MapPin },
+    { page: 'comparison', label: 'Compare', icon: TrendingUp },
+    { page: 'budget-advisor', label: 'Budget Tool', icon: Zap },
+    { page: 'dashboard', label: 'Analytics', icon: BarChart3 },
     { page: 'blog', label: 'Blog', icon: MapPin },
     { page: 'about', label: 'About', icon: TrendingUp },
     { page: 'contact', label: 'Contact', icon: Zap },
@@ -42,7 +46,7 @@ export default function Navigation() {
                 <button
                   key={link.page}
                   onClick={() => handleClick(link.page)}
-                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/5 rounded-full transition-all whitespace-nowrap"
+                  className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/5 rounded-full transition-all whitespace-nowrap"
                 >
                   {link.label}
                 </button>

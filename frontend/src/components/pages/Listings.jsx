@@ -17,6 +17,9 @@ export default function Listings() {
   const [selectedArea, setSelectedArea] = useState('')
   const [minRating, setMinRating]     = useState(0)
   const [bedrooms, setBedrooms]       = useState('')
+  const [bathrooms, setBathrooms]     = useState('')
+  const [maxDistance, setMaxDistance] = useState(20)
+  const [verifiedOnly, setVerifiedOnly] = useState(false)
 
   // Fetch all properties once on mount; filtering is done client-side for
   // a snappy search experience, with server-side filtering as fallback.
@@ -40,10 +43,13 @@ export default function Listings() {
         property.price >= priceRange[0] && property.price <= priceRange[1]
       const matchesArea    = !selectedArea || property.area === selectedArea
       const matchesRating  = property.rating >= minRating
-      const matchesBedrooms = !bedrooms || property.bedrooms === parseInt(bedrooms)
-      return matchesSearch && matchesPrice && matchesArea && matchesRating && matchesBedrooms
+      const matchesBedrooms = !bedrooms || property.bedrooms >= parseInt(bedrooms)
+      const matchesBathrooms = !bathrooms || property.bathrooms >= parseInt(bathrooms)
+      const matchesDistance = !maxDistance || (property.distance && property.distance <= maxDistance)
+      const matchesVerified = !verifiedOnly || property.verified === true
+      return matchesSearch && matchesPrice && matchesArea && matchesRating && matchesBedrooms && matchesBathrooms && matchesDistance && matchesVerified
     })
-  }, [properties, searchQuery, priceRange, selectedArea, minRating, bedrooms])
+  }, [properties, searchQuery, priceRange, selectedArea, minRating, bedrooms, bathrooms, maxDistance, verifiedOnly])
 
   return (
     <main className="min-h-screen bg-background px-4 sm:px-6 lg:px-8 py-8">
@@ -132,10 +138,21 @@ export default function Listings() {
                 <label className="text-sm font-medium text-foreground mb-2 block">Bedrooms</label>
                 <select value={bedrooms} onChange={(e) => setBedrooms(e.target.value)} className="input-field">
                   <option value="">Any</option>
-                  <option value="1">1 Bedroom</option>
-                  <option value="2">2 Bedrooms</option>
-                  <option value="3">3 Bedrooms</option>
+                  <option value="1">1+ Bedrooms</option>
+                  <option value="2">2+ Bedrooms</option>
+                  <option value="3">3+ Bedrooms</option>
                   <option value="4">4+ Bedrooms</option>
+                </select>
+              </div>
+
+              {/* Bathrooms */}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block">Bathrooms</label>
+                <select value={bathrooms} onChange={(e) => setBathrooms(e.target.value)} className="input-field">
+                  <option value="">Any</option>
+                  <option value="1">1+ Bathrooms</option>
+                  <option value="2">2+ Bathrooms</option>
+                  <option value="3">3+ Bathrooms</option>
                 </select>
               </div>
 
@@ -155,6 +172,37 @@ export default function Listings() {
                 </select>
               </div>
 
+              {/* Distance */}
+              <div>
+                <label className="text-sm font-medium text-foreground mb-2 block flex justify-between">
+                  <span>Max Distance</span>
+                  <span className="text-muted-foreground">{maxDistance} km</span>
+                </label>
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  step="1"
+                  value={maxDistance}
+                  onChange={(e) => setMaxDistance(parseInt(e.target.value))}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Verified Only */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="verifiedOnly"
+                  checked={verifiedOnly}
+                  onChange={(e) => setVerifiedOnly(e.target.checked)}
+                  className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
+                />
+                <label htmlFor="verifiedOnly" className="text-sm font-medium text-foreground">
+                  Verified Listings Only
+                </label>
+              </div>
+
               {/* Reset */}
               <button
                 onClick={() => {
@@ -163,6 +211,9 @@ export default function Listings() {
                   setSelectedArea('')
                   setMinRating(0)
                   setBedrooms('')
+                  setBathrooms('')
+                  setMaxDistance(20)
+                  setVerifiedOnly(false)
                 }}
                 className="w-full px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors text-sm font-medium"
               >

@@ -273,10 +273,10 @@ export default function Home() {
             <div className="md:col-span-4 lg:col-span-3">
               <h4 className="font-semibold text-white mb-6">Legal & Support</h4>
               <ul className="space-y-4 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Cookie Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Help Center</a></li>
+                <li><button onClick={() => onNavigate('privacy')} className="hover:text-primary transition-colors">Privacy Policy</button></li>
+                <li><button onClick={() => onNavigate('terms')} className="hover:text-primary transition-colors">Terms of Service</button></li>
+                <li><button onClick={() => onNavigate('cookies')} className="hover:text-primary transition-colors">Cookie Policy</button></li>
+                <li><button onClick={() => onNavigate('help')} className="hover:text-primary transition-colors">Help Center</button></li>
               </ul>
             </div>
           </div>
