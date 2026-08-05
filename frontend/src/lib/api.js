@@ -94,10 +94,21 @@ export const getReviews = (propertyId) =>
   client.get(`/reviews/property/${propertyId}`)
 
 /**
+ * @returns {Promise<ReviewDTO[]>}
+ */
+export const getAllReviews = () => client.get('/reviews')
+
+/**
  * @param {ReviewDTO} data - { propertyId, author, rating, comment, complaintTags[] }
  * @returns {Promise<ReviewDTO>}
  */
 export const createReview = (data) => client.post('/reviews', data)
+
+/**
+ * @param {number} id
+ * @returns {Promise<void>}
+ */
+export const deleteReview = (id) => client.delete(`/reviews/${id}`)
 
 // ── Analytics ─────────────────────────────────────────────────────────────────
 
@@ -117,7 +128,9 @@ const api = {
   updateProperty,
   deleteProperty,
   getReviews,
+  getAllReviews,
   createReview,
+  deleteReview,
   getMarketDashboard,
 }
 
