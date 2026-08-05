@@ -87,6 +87,7 @@ export default function AddProperty() {
         bathrooms: parseInt(formData.bathrooms),
         squareFeet: formData.squareFeet ? parseInt(formData.squareFeet) : null,
         distance: formData.distance ? parseFloat(formData.distance) : null,
+        availableFrom: formData.availableFrom ? formData.availableFrom : null,
         facilities: formData.facilities ? formData.facilities.split(',').map(f => f.trim()) : [],
         imageUrl: uploadedUrls.length > 0 ? uploadedUrls[0] : '',
         galleryUrls: uploadedUrls.length > 1 ? uploadedUrls.slice(1) : []
