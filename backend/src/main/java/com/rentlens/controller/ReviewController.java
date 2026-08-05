@@ -23,10 +23,23 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.getByProperty(propertyId));
     }
 
+    // ── GET /api/reviews ─────────────────────────────────────────────────────────
+    @GetMapping
+    public ResponseEntity<List<ReviewDTO>> getAll() {
+        return ResponseEntity.ok(reviewService.getAll());
+    }
+
     // ── POST /api/reviews ────────────────────────────────────────────────────────
     @PostMapping
     public ResponseEntity<ReviewDTO> create(@Valid @RequestBody ReviewDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(reviewService.create(dto));
+    }
+
+    // ── DELETE /api/reviews/{id} ─────────────────────────────────────────────────
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        reviewService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

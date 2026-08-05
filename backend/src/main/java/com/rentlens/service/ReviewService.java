@@ -28,6 +28,12 @@ public class ReviewService {
                 .stream().map(this::toDTO).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
+    public List<ReviewDTO> getAll() {
+        return reviewRepository.findAll()
+                .stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
     @Transactional
     public ReviewDTO create(ReviewDTO dto) {
         Property property = propertyRepository.findById(dto.getPropertyId())
@@ -48,6 +54,15 @@ public class ReviewService {
         propertyService.refreshReviewAggregates(dto.getPropertyId());
 
         return saved;
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Review not found: " + id));
+        Long propertyId = review.getProperty().getId();
+        reviewRepository.delete(review);
+        propertyService.refreshReviewAggregates(propertyId);
     }
 
     // ── DTO mapping ──────────────────────────────────────────────────────────────
