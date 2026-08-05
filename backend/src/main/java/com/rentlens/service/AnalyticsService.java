@@ -78,12 +78,57 @@ public class AnalyticsService {
                         .build())
                 .collect(Collectors.toList());
 
+        // ── Property Types ────────────────────────────────────────────────────────
+        List<Object[]> typeRaw = propertyRepository.getTypeStats();
+        List<AnalyticsDTO.TypeStat> typeStats = typeRaw.stream().map(row ->
+            AnalyticsDTO.TypeStat.builder()
+                .propertyType(row[0] != null ? (String) row[0] : "Unknown")
+                .count(((Number) row[1]).intValue())
+                .build()
+        ).collect(Collectors.toList());
+
+        // ── Furnished Stats ───────────────────────────────────────────────────────
+        List<Object[]> furnishedRaw = propertyRepository.getFurnishedStats();
+        List<AnalyticsDTO.FurnishedStat> furnishedStats = furnishedRaw.stream().map(row ->
+            AnalyticsDTO.FurnishedStat.builder()
+                .status((row[0] != null && (Boolean) row[0]) ? "Furnished" : "Unfurnished")
+                .avgPrice(((Number) row[1]).doubleValue())
+                .count(((Number) row[2]).intValue())
+                .build()
+        ).collect(Collectors.toList());
+
+        // ── Bedroom Stats ─────────────────────────────────────────────────────────
+        List<Object[]> bedroomRaw = propertyRepository.getBedroomStats();
+        List<AnalyticsDTO.BedroomStat> bedroomStats = bedroomRaw.stream().map(row ->
+            AnalyticsDTO.BedroomStat.builder()
+                .bedrooms(row[0] != null ? ((Number) row[0]).intValue() : 0)
+                .avgPrice(((Number) row[1]).doubleValue())
+                .count(((Number) row[2]).intValue())
+                .build()
+        ).collect(Collectors.toList());
+
+        // ── Summary KPIs ──────────────────────────────────────────────────────────
+        double globalAvgRent = areaStats.stream()
+                .mapToDouble(AnalyticsDTO.AreaStat::getAvgPrice)
+                .average()
+                .orElse(0.0);
+
+        String topArea = areaStats.stream()
+                .max(Comparator.comparingDouble(AnalyticsDTO.AreaStat::getAvgRating))
+                .map(AnalyticsDTO.AreaStat::getArea)
+                .orElse("None");
+
         return AnalyticsDTO.MarketDashboard.builder()
                 .areaStats(areaStats)
                 .complaintPatterns(complaints)
                 .rvsBuckets(rvsBuckets)
                 .totalProperties(propertyRepository.countAll())
                 .priceHistory(priceHistory)
+                .typeStats(typeStats)
+                .furnishedStats(furnishedStats)
+                .bedroomStats(bedroomStats)
+                .globalAvgRent(globalAvgRent)
+                .topArea(topArea)
                 .build();
     }
 }

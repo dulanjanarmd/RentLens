@@ -52,6 +52,15 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
     @Query("SELECT p.area, AVG(p.price), COUNT(p), AVG(p.rating) FROM Property p GROUP BY p.area")
     List<Object[]> getAreaStats();
 
+    @Query("SELECT p.propertyType, COUNT(p) FROM Property p GROUP BY p.propertyType")
+    List<Object[]> getTypeStats();
+
+    @Query("SELECT p.furnished, AVG(p.price), COUNT(p) FROM Property p GROUP BY p.furnished")
+    List<Object[]> getFurnishedStats();
+
+    @Query("SELECT p.bedrooms, AVG(p.price), COUNT(p) FROM Property p GROUP BY p.bedrooms ORDER BY p.bedrooms ASC")
+    List<Object[]> getBedroomStats();
+
     @Query("SELECT COUNT(p) FROM Property p")
     long countAll();
 }

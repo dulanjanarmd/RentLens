@@ -17,6 +17,11 @@ public class AnalyticsDTO {
         private Map<String, Long>      rvsBuckets;
         private long                   totalProperties;
         private List<PriceHistoryStat> priceHistory;
+        private List<TypeStat>         typeStats;
+        private List<FurnishedStat>    furnishedStats;
+        private List<BedroomStat>      bedroomStats;
+        private double                 globalAvgRent;
+        private String                 topArea;
     }
 
     @Data
@@ -47,5 +52,34 @@ public class AnalyticsDTO {
         private String month;
         private int average;
         private int median;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class TypeStat {
+        private String propertyType;
+        private int count;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class FurnishedStat {
+        private String status; // "Furnished" or "Unfurnished"
+        private double avgPrice;
+        private int count;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class BedroomStat {
+        private int bedrooms;
+        private double avgPrice;
+        private int count;
     }
 }
