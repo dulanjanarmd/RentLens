@@ -72,6 +72,17 @@ public class Property {
     @Column(length = 1000)
     private String imageUrl;
 
+    @ElementCollection
+    @CollectionTable(name = "property_gallery", joinColumns = @JoinColumn(name = "property_id"))
+    @Column(name = "image_url", length = 1000)
+    private List<String> galleryUrls;
+
+    private String propertyType;
+    
+    private Boolean furnished;
+    
+    private LocalDate availableFrom;
+
     /** Whether the landlord/listing has been admin-verified */
     @Column(nullable = false)
     @Builder.Default

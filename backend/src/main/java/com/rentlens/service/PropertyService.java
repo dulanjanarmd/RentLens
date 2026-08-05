@@ -128,6 +128,10 @@ public class PropertyService {
                 .verified(p.getVerified())
                 .latitude(p.getLatitude())
                 .longitude(p.getLongitude())
+                .galleryUrls(p.getGalleryUrls())
+                .propertyType(p.getPropertyType())
+                .furnished(p.getFurnished())
+                .availableFrom(p.getAvailableFrom())
                 .postedDate(p.getPostedDate())
                 .rentValueScore(p.getRentValueScore())
                 .priceScore(p.getPriceScore())
@@ -162,6 +166,10 @@ public class PropertyService {
         p.setVerified(dto.getVerified() != null ? dto.getVerified() : false);
         p.setLatitude(dto.getLatitude());
         p.setLongitude(dto.getLongitude());
+        p.setGalleryUrls(dto.getGalleryUrls());
+        p.setPropertyType(dto.getPropertyType());
+        p.setFurnished(dto.getFurnished());
+        p.setAvailableFrom(dto.getAvailableFrom());
         p.setPostedDate(dto.getPostedDate());
     }
 }

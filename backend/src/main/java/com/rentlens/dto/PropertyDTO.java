@@ -35,6 +35,12 @@ public class PropertyDTO {
     private Boolean verified;
     private Double  latitude;
     private Double  longitude;
+    private List<String> galleryUrls;
+    private String  propertyType;
+    private Boolean furnished;
+    
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate availableFrom;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate postedDate;

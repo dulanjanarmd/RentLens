@@ -212,30 +212,76 @@ export default function PropertyDetail() {
           </div>
         </div>
 
-        {/* Main Image */}
-        <div className="mb-8 relative">
-          <img
-            src={property.imageUrl}
-            alt={property.title}
-            className="w-full h-96 object-cover rounded-lg border border-border"
-          />
-          <div className="absolute bottom-4 right-4 flex gap-2">
-            <button
-              onClick={() => setShowGallery(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-lg"
-            >
-              <Image className="w-5 h-5" />
-              Gallery
-            </button>
-            <button
-              onClick={() => setShowTour(true)}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-lg"
-            >
-              <Video className="w-5 h-5" />
-              Virtual Tour
-            </button>
+        {/* Main Image / Gallery */}
+        {property.galleryUrls && property.galleryUrls.length > 0 ? (
+          <div className="mb-8 grid grid-cols-4 grid-rows-2 gap-2 h-[400px] md:h-[500px] rounded-xl overflow-hidden relative">
+            <div className="col-span-2 row-span-2 relative h-full">
+              <img
+                src={property.imageUrl}
+                alt={property.title}
+                className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
+                onClick={() => setShowGallery(true)}
+              />
+            </div>
+            {property.galleryUrls.slice(0, 4).map((url, idx) => (
+              <div key={idx} className="relative h-full">
+                <img
+                  src={url}
+                  className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
+                  onClick={() => setShowGallery(true)}
+                />
+                {idx === 3 && property.galleryUrls.length > 4 && (
+                  <div
+                    className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer hover:bg-black/50 transition-colors"
+                    onClick={() => setShowGallery(true)}
+                  >
+                    <span className="text-white font-medium text-lg">+{property.galleryUrls.length - 3} more</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            <div className="absolute bottom-4 right-4 flex gap-2">
+              <button
+                onClick={() => setShowGallery(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-background/90 backdrop-blur-sm text-foreground rounded-lg hover:bg-background transition-colors shadow-lg border border-border font-medium"
+              >
+                <Image className="w-5 h-5" />
+                Show all photos
+              </button>
+              <button
+                onClick={() => setShowTour(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary/90 backdrop-blur-sm text-primary-foreground rounded-lg hover:bg-primary transition-colors shadow-lg font-medium"
+              >
+                <Video className="w-5 h-5" />
+                Virtual Tour
+              </button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="mb-8 relative">
+            <img
+              src={property.imageUrl}
+              alt={property.title}
+              className="w-full h-96 object-cover rounded-xl border border-border"
+            />
+            <div className="absolute bottom-4 right-4 flex gap-2">
+              <button
+                onClick={() => setShowGallery(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-lg"
+              >
+                <Image className="w-5 h-5" />
+                Gallery
+              </button>
+              <button
+                onClick={() => setShowTour(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors shadow-lg"
+              >
+                <Video className="w-5 h-5" />
+                Virtual Tour
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
@@ -246,33 +292,63 @@ export default function PropertyDetail() {
                 LKR {property.price?.toLocaleString()}
                 <span className="text-sm text-muted-foreground font-normal"> /month</span>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex items-center gap-2">
-                  <BedDouble className="w-5 h-5 text-primary" />
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Home className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground">Type</p>
+                    <p className="font-semibold text-foreground">{property.propertyType || 'Property'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <BedDouble className="w-5 h-5 text-primary" />
+                  </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Bedrooms</p>
                     <p className="font-semibold text-foreground">{property.bedrooms}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Waves className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Waves className="w-5 h-5 text-primary" />
+                  </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Bathrooms</p>
                     <p className="font-semibold text-foreground">{property.bathrooms}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Home className="w-5 h-5 text-primary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <MapPinIcon className="w-5 h-5 text-primary" />
+                  </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Square Feet</p>
-                    <p className="font-semibold text-foreground">{property.squareFeet}</p>
+                    <p className="font-semibold text-foreground">{property.squareFeet || 'N/A'}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <MapPinIcon className="w-5 h-5 text-primary" />
+                
+                {property.availableFrom && (
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Available From</p>
+                      <p className="font-semibold text-foreground">{new Date(property.availableFrom).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-primary/10 rounded-lg">
+                    <Home className="w-5 h-5 text-primary" />
+                  </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Distance</p>
-                    <p className="font-semibold text-foreground">{property.distance} km</p>
+                    <p className="text-xs text-muted-foreground">Furnishing</p>
+                    <p className="font-semibold text-foreground">{property.furnished ? 'Furnished' : 'Unfurnished'}</p>
                   </div>
                 </div>
               </div>
