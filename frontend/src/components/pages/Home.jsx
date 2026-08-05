@@ -263,10 +263,10 @@ export default function Home() {
             <div className="md:col-span-2 lg:col-span-2">
               <h4 className="font-semibold text-white mb-6">Company</h4>
               <ul className="space-y-4 text-sm text-slate-400">
-                <li><a href="#" className="hover:text-primary transition-colors">About Us</a></li>
+                <li><button onClick={() => onNavigate('about')} className="hover:text-primary transition-colors">About Us</button></li>
                 <li><a href="#" className="hover:text-primary transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Blog</a></li>
+                <li><button onClick={() => onNavigate('contact')} className="hover:text-primary transition-colors">Contact</button></li>
+                <li><button onClick={() => onNavigate('blog')} className="hover:text-primary transition-colors">Blog</button></li>
               </ul>
             </div>
 

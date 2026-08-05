@@ -12,11 +12,10 @@ export default function Navigation() {
   const links = [
     { page: 'home', label: 'Home', icon: Home },
     { page: 'listings', label: 'Listings', icon: Building2 },
+    { page: 'blog', label: 'Blog', icon: MapPin },
+    { page: 'about', label: 'About', icon: TrendingUp },
+    { page: 'contact', label: 'Contact', icon: Zap },
     { page: 'add-property', label: 'List Property', icon: PlusCircle },
-    { page: 'map-search', label: 'Map Search', icon: MapPin },
-    { page: 'comparison', label: 'Compare', icon: TrendingUp },
-    { page: 'budget-advisor', label: 'Budget Tool', icon: Zap },
-    { page: 'dashboard', label: 'Market Analytics', icon: BarChart3 },
   ]
 
   const handleClick = (page) => {

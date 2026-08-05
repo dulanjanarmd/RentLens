@@ -2,21 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { Calendar, User, ArrowLeft, Loader2 } from 'lucide-react'
 import api from '@/lib/api'
 import { useAppNavigation } from '@/hooks/useAppNavigation'
+import { useParams } from 'react-router-dom'
 
-// Note: In a real app we would use react-router's useParams.
-// Since the user uses a custom hash-based router in App.jsx, we extract ID from the hash.
 export default function BlogPostView() {
   const onNavigate = useAppNavigation()
+  const { id } = useParams()
   const [blog, setBlog] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    // Basic hash router id extraction (assuming format #blog/123)
-    const hash = window.location.hash.slice(1)
-    const parts = hash.split('/')
-    const id = parts[1]
-
     if (!id) {
       setError('Invalid blog ID')
       setLoading(false)

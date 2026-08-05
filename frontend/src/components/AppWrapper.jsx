@@ -13,12 +13,17 @@ import MapSearch from '@/components/pages/MapSearch'
 import Profile from '@/components/pages/Profile'
 import Login from '@/components/pages/Login'
 import Signup from '@/components/pages/Signup'
+import About from '@/components/pages/About'
+import Contact from '@/components/pages/Contact'
+import BlogList from '@/components/pages/BlogList'
+import BlogPostView from '@/components/pages/BlogPostView'
 
 import AdminLayout from '@/components/pages/admin/AdminLayout'
 import AdminDashboard from '@/components/pages/admin/AdminDashboard'
 import AdminProperties from '@/components/pages/admin/AdminProperties'
 import AdminReviews from '@/components/pages/admin/AdminReviews'
 import AdminInquiries from '@/components/pages/admin/AdminInquiries'
+import AdminBlog from '@/components/pages/admin/AdminBlog'
 import { Outlet, Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -64,6 +69,10 @@ export default function AppWrapper() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/blog" element={<BlogList />} />
+          <Route path="/blog/:id" element={<BlogPostView />} />
         </Route>
         
         {/* Admin Routes */}
@@ -72,6 +81,7 @@ export default function AppWrapper() {
           <Route path="properties" element={<AdminProperties />} />
           <Route path="reviews" element={<AdminReviews />} />
           <Route path="inquiries" element={<AdminInquiries />} />
+          <Route path="blog" element={<AdminBlog />} />
         </Route>
       </Routes>
     </Router>
