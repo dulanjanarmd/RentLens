@@ -1,52 +1,80 @@
-import React, { createContext, useState, useCallback } from 'react'
+import React, { createContext, useState, useCallback, useEffect } from 'react'
+import { loginUser, registerUser, deleteAccount } from '@/lib/api'
 
 export const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [favorites, setFavorites] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const login = useCallback((email, password) => {
-    setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
-      setUser({
-        id: Math.random(),
-        email,
-        name: email.split('@')[0],
-        profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        createdAt: new Date(),
-      })
-      setIsLoading(false)
-    }, 800)
+  // Load from local storage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem('rentlens_user')
+    if (storedUser) {
+      setUser(JSON.parse(storedUser))
+    }
+    const storedFavorites = localStorage.getItem('rentlens_favorites')
+    if (storedFavorites) {
+      setFavorites(JSON.parse(storedFavorites))
+    }
+    setIsLoading(false)
   }, [])
 
-  const signup = useCallback((email, password, name) => {
+  const login = useCallback(async (email, password) => {
     setIsLoading(true)
-    setTimeout(() => {
-      setUser({
-        id: Math.random(),
-        email,
-        name,
-        profileImage: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        createdAt: new Date(),
-      })
+    try {
+      const userData = await loginUser({ email, password })
+      setUser(userData)
+      localStorage.setItem('rentlens_user', JSON.stringify(userData))
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message }
+    } finally {
       setIsLoading(false)
-    }, 800)
+    }
+  }, [])
+
+  const signup = useCallback(async (email, password, name) => {
+    setIsLoading(true)
+    try {
+      const userData = await registerUser({ email, password, name })
+      setUser(userData)
+      localStorage.setItem('rentlens_user', JSON.stringify(userData))
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message }
+    } finally {
+      setIsLoading(false)
+    }
   }, [])
 
   const logout = useCallback(() => {
     setUser(null)
     setFavorites([])
+    localStorage.removeItem('rentlens_user')
+    localStorage.removeItem('rentlens_favorites')
   }, [])
 
+  const removeAccount = useCallback(async () => {
+    if (!user) return
+    try {
+      await deleteAccount(user.id)
+      logout()
+      return { success: true }
+    } catch (err) {
+      return { success: false, error: err.response?.data || err.message }
+    }
+  }, [user, logout])
+
   const toggleFavorite = useCallback((propertyId) => {
-    setFavorites((prev) =>
-      prev.includes(propertyId)
+    setFavorites((prev) => {
+      const updated = prev.includes(propertyId)
         ? prev.filter((id) => id !== propertyId)
         : [...prev, propertyId]
-    )
+      localStorage.setItem('rentlens_favorites', JSON.stringify(updated))
+      return updated
+    })
   }, [])
 
   const isFavorite = useCallback((propertyId) => {
@@ -60,6 +88,7 @@ export function AuthProvider({ children }) {
     login,
     signup,
     logout,
+    removeAccount,
     toggleFavorite,
     isFavorite,
   }

@@ -8,8 +8,9 @@ import { useAppNavigation } from '@/hooks/useAppNavigation';
 
 export default function Profile() {
   const onNavigate = useAppNavigation();
-  const { user, logout, favorites } = useAuth()
+  const { user, logout, removeAccount, favorites } = useAuth()
   const [activeTab, setActiveTab] = useState('favorites')
+  const [isDeleting, setIsDeleting] = useState(false)
 
   if (!user) {
     return (
@@ -39,6 +40,19 @@ export default function Profile() {
   const handleLogout = () => {
     logout()
     onNavigate('home')
+  }
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      setIsDeleting(true)
+      const res = await removeAccount()
+      setIsDeleting(false)
+      if (res.success) {
+        onNavigate('home')
+      } else {
+        alert(res.error || "Failed to delete account")
+      }
+    }
   }
 
   return (
@@ -196,12 +210,22 @@ export default function Profile() {
                   </span>
                 </label>
               </div>
-              <button
-                onClick={() => setActiveTab('favorites')}
-                className="btn-primary"
-              >
-                Back to Favorites
-              </button>
+              <div className="pt-6 border-t border-border flex flex-col gap-3">
+                <button
+                  onClick={() => setActiveTab('favorites')}
+                  className="btn-primary w-full"
+                >
+                  Back to Favorites
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting}
+                  className="w-full px-4 py-2 border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  {isDeleting ? 'Deleting...' : 'Delete Account'}
+                </button>
+              </div>
             </div>
           </div>
         )}

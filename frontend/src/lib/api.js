@@ -118,6 +118,14 @@ export const createInquiry = (data) => client.post('/inquiries', data)
 
 export const deleteInquiry = (id) => client.delete(`/inquiries/${id}`)
 
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+export const loginUser = (data) => client.post('/auth/login', data)
+
+export const registerUser = (data) => client.post('/auth/register', data)
+
+export const deleteAccount = (id) => client.delete(`/auth/${id}`)
+
 // ── Analytics ─────────────────────────────────────────────────────────────────
 
 /**
@@ -142,6 +150,9 @@ const api = {
   getAllInquiries,
   createInquiry,
   deleteInquiry,
+  loginUser,
+  registerUser,
+  deleteAccount,
   getMarketDashboard,
 }
 

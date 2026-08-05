@@ -12,7 +12,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const { login, isLoading } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -26,10 +26,12 @@ export default function Login() {
       return
     }
 
-    login(email, password)
-    setTimeout(() => {
+    const res = await login(email, password)
+    if (res.success) {
       onNavigate('home')
-    }, 1000)
+    } else {
+      setError(res.error || 'Failed to login')
+    }
   }
 
   return (
@@ -126,10 +128,10 @@ export default function Login() {
         {/* Demo Credentials */}
         <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-xs font-medium text-blue-900 dark:text-blue-200 mb-2">
-            Demo Credentials:
+            Admin Credentials:
           </p>
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            Email: demo@example.com | Password: demo123
+            Email: admin@rentlens.com | Password: admin123
           </p>
         </div>
       </div>

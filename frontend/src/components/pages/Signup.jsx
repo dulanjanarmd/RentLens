@@ -13,6 +13,7 @@ export default function Signup() {
   })
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
+  const [apiError, setApiError] = useState('')
   const { signup, isLoading } = useAuth()
 
   const validateForm = () => {
@@ -45,8 +46,9 @@ export default function Signup() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setApiError('')
     const newErrors = validateForm()
 
     if (Object.keys(newErrors).length > 0) {
@@ -54,10 +56,12 @@ export default function Signup() {
       return
     }
 
-    signup(formData.email, formData.password, formData.name)
-    setTimeout(() => {
+    const res = await signup(formData.email, formData.password, formData.name)
+    if (res.success) {
       onNavigate('home')
-    }, 1000)
+    } else {
+      setApiError(res.error || 'Failed to create account')
+    }
   }
 
   const passwordStrength = formData.password.length > 0 ? Math.min(100, formData.password.length * 15) : 0
@@ -80,6 +84,12 @@ export default function Signup() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {apiError && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-200 px-4 py-3 rounded-lg text-sm mb-4">
+                {apiError}
+              </div>
+            )}
+            
             {/* Name Input */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">

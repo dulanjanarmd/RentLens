@@ -3,9 +3,11 @@ package com.rentlens.config;
 import com.rentlens.model.Property;
 import com.rentlens.model.Review;
 import com.rentlens.model.PriceHistory;
+import com.rentlens.model.User;
 import com.rentlens.repository.PropertyRepository;
 import com.rentlens.repository.ReviewRepository;
 import com.rentlens.repository.PriceHistoryRepository;
+import com.rentlens.repository.UserRepository;
 import com.rentlens.service.RentScoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +15,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -35,10 +41,13 @@ public class DataSeeder implements CommandLineRunner {
     private final ReviewRepository   reviewRepository;
     private final PriceHistoryRepository priceHistoryRepository;
     private final RentScoreService   rentScoreService;
+    private final UserRepository     userRepository;
 
     @Override
     @Transactional
     public void run(String... args) {
+
+        seedAdmin();
 
         if (priceHistoryRepository.count() == 0) {
             log.info("DataSeeder: seeding price history...");
@@ -232,5 +241,30 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         r.setComplaintTagsList(tag != null ? List.of(tag) : List.of());
         return r;
+    }
+
+    private String hashPassword(String password) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing password", e);
+        }
+    }
+
+    private void seedAdmin() {
+        if (!userRepository.existsByEmail("admin@rentlens.com")) {
+            User admin = User.builder()
+                    .email("admin@rentlens.com")
+                    .name("System Admin")
+                    .passwordHash(hashPassword("admin123"))
+                    .role("ADMIN")
+                    .profileImage("https://api.dicebear.com/7.x/avataaars/svg?seed=admin")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            userRepository.save(admin);
+            log.info("DataSeeder: seeded default ADMIN user.");
+        }
     }
 }
