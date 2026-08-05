@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const data = await api.getAllProperties()
+        const data = await api.getProperties()
         setFeaturedProperties(data.slice(0, 3))
       } catch (error) {
         console.error("Failed to fetch featured properties:", error)

@@ -135,15 +135,6 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Demo Credentials */}
-        <div className="mt-6 p-4 bg-background/80 dark:bg-background/50 backdrop-blur-xl border border-border/50 shadow-lg rounded-2xl text-center">
-          <p className="text-xs font-semibold text-foreground mb-1">
-            Admin Credentials
-          </p>
-          <p className="text-xs text-muted-foreground">
-            admin@rentlens.com <br className="sm:hidden" /> <span className="hidden sm:inline">|</span> admin123
-          </p>
-        </div>
       </div>
     </div>
   )
