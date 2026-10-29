@@ -34,10 +34,11 @@ import { useAuth } from '@/hooks/useAuth'
 function MainLayout() {
   const location = useLocation()
   const isImmersivePage = ['/', '/login', '/signup', '/map-search'].includes(location.pathname)
+  const isAuthPage = ['/login', '/signup'].includes(location.pathname)
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
+      {!isAuthPage && <Navigation />}
       <div className={isImmersivePage ? '' : 'pt-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto'}>
         <Outlet />
       </div>

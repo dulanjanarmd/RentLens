@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mail, Lock, User, UserPlus, Eye, EyeOff, Check } from 'lucide-react'
+import { Mail, Lock, User, UserPlus, Eye, EyeOff, Check, ArrowLeft } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useAppNavigation } from '@/hooks/useAppNavigation'
 
@@ -87,8 +87,17 @@ export default function Signup() {
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 pt-32 pb-12 overflow-y-auto">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-16 py-12 overflow-y-auto">
         <div className="w-full max-w-sm">
+          {/* Back to Home */}
+          <button
+            onClick={() => onNavigate('home')}
+            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </button>
+
           {/* Header */}
           <div className="text-center mb-10">
             <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Create Account</h1>

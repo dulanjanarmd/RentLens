@@ -44,7 +44,7 @@ export default function Home() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
         >
-          <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary-foreground border border-primary/30 backdrop-blur-md mb-6 text-sm font-medium">
+          <span className="inline-block mb-6 text-sm font-medium text-primary-foreground">
             Welcome to the Future of Renting
           </span>
           <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)]">
